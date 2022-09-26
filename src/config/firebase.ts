@@ -10,10 +10,7 @@ const Firebase = firebase.initializeApp(config.firebase);
 
 // Add or Remove authentification methods here.
 export const Providers = {
-  google: new firebase.auth.TwitterAuthProvider()
-  // facebook: new firebase.auth.FacebookAuthProvider(),
-  // google: new firebase.auth.GoogleAuthProvider(),
-  // facebook: new firebase.auth.FacebookAuthProvider(),
+  twitter: new firebase.auth.TwitterAuthProvider()
 };
 
 export const auth = firebase.auth();

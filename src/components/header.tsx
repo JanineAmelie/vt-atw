@@ -11,6 +11,8 @@ const HeaderBar: React.FunctionComponent<IHeaderProps> = ({ name }) => {
       <header className="App-header">
         {name}
         <img src={logo} className="App-logo" alt="logo" />
+
+        <h1> hi mods</h1>
       </header>
     </div>
   );
