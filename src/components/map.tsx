@@ -14,32 +14,37 @@ interface IMapProps {
 const INITIAL_VIEW_STATE = {
   longitude: -122.4,
   latitude: 37.8,
-  zoom: 1
+  zoom: 3
 };
 
 const MapView: React.FunctionComponent<IMapProps> = ({ id, mapStyleURL, mapboxToken }) => {
   const mapRef = useRef<MapRef>(null);
 
   const onClick = (event: any) => {
-    const feature = event.features[0];
-    const clusterId = feature.properties.cluster_id; //@TODO: change
+    console.log(event);
 
-    const mapboxSource = mapRef.current?.getSource("earthquakes") as GeoJSONSource;
+    if (event.features.length) {
+      const feature = event.features[0];
+      const clusterId = feature.properties.cluster_id; //@TODO: change
 
-    mapboxSource.getClusterExpansionZoom(clusterId, (err, zoom) => {
-      if (err) {
-        return;
-      }
+      const mapboxSource = mapRef.current?.getSource("earthquakes") as GeoJSONSource;
 
-      mapRef.current?.easeTo({
-        center: feature.geometry.coordinates,
-        zoom,
-        duration: 500
+      mapboxSource.getClusterExpansionZoom(clusterId, (err, zoom) => {
+        if (err) {
+          return;
+        }
+
+        mapRef.current?.easeTo({
+          center: feature.geometry.coordinates,
+          zoom,
+          duration: 500
+        });
       });
-    });
+    }
   };
 
   const [viewState, setViewState] = useState(INITIAL_VIEW_STATE);
+
   return (
     <MapProvider>
       <Map
@@ -49,8 +54,9 @@ const MapView: React.FunctionComponent<IMapProps> = ({ id, mapStyleURL, mapboxTo
         style={{ width: "100vw", height: "100vh" }}
         mapStyle={mapStyleURL}
         mapboxAccessToken={mapboxToken}
-        interactiveLayerIds={[clusterLayer?.id || ""]}
+        interactiveLayerIds={[clusterLayer.id || ""]}
         onClick={onClick}
+        projection="globe"
         ref={mapRef}
         onRender={(event) => event.target.resize()}>
         {/* @TODO iterate over data */}
