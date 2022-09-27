@@ -1,4 +1,5 @@
 /* config-overrides.js */
+/* eslint-disable*/
 
 module.exports = function override(config, env) {
   config.module.rules.push({

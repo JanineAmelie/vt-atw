@@ -1,13 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { auth } from "../config/firebase";
 import "./App.css";
+import "mapbox-gl/dist/mapbox-gl.css";
 
 import HeaderBar from "../components/header";
-import SignUp from "../components/sign-up";
+// import SignUp from "../components/sign-up";
+import Map from "../components/map";
+
 export interface IApplicationProps {
   name?: string;
 }
 const App: React.FunctionComponent<IApplicationProps> = (props) => {
+  const mapBoxToken = process?.env.REACT_APP_MAP_TOKEN || "";
+  const mapBoxStyleURL = process?.env.REACT_APP_MAP_STYLE_URL || "";
+
   const [loading, setLoading] = useState<boolean>(false);
   // Monitor and Update user state.
   useEffect(() => {
@@ -24,9 +30,12 @@ const App: React.FunctionComponent<IApplicationProps> = (props) => {
 
   return (
     <div className="App">
-      <HeaderBar name={"vt-atw"} />
-      {loading ? <div>Loading...</div> : ""}
-      <SignUp />
+      <div>
+        <HeaderBar name={"vt-atw"} />
+        <Map id="vtw-atw" mapboxToken={mapBoxToken} mapStyleURL={mapBoxStyleURL} />
+      </div>
+      {/* {loading ? <div>Loading...</div> : ""} */}
+      {/* <SignUp /> */}
     </div>
   );
 };

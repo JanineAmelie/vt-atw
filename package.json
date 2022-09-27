@@ -11,12 +11,23 @@
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
     "firebase": "^9.10.0",
+    "mapbox-gl": "^2.10.0",
     "react": "^18.2.0",
     "react-app-rewired": "^2.2.1",
     "react-dom": "^18.2.0",
+    "react-map-gl": "^7.0.19",
     "react-scripts": "4.0.1",
     "typescript": "^4.4.2",
     "web-vitals": "^2.1.0"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.38.0",
+    "@typescript-eslint/parser": "^5.38.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-react": "^7.31.8",
+    "file-loader": "^6.2.0",
+    "prettier": "^2.7.1"
   },
   "scripts": {
     "start": "react-app-rewired start",
@@ -34,17 +45,7 @@
     ]
   },
   "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not op_mini all"
-  ],
-  "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^5.38.0",
-    "@typescript-eslint/parser": "^5.38.0",
-    "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-prettier": "^4.2.1",
-    "eslint-plugin-react": "^7.31.8",
-    "file-loader": "^6.2.0",
-    "prettier": "^2.7.1"
-  }
+    "defaults",
+    "not ie 11"
+  ]
 }
