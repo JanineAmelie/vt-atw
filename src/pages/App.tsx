@@ -4,16 +4,14 @@ import "./App.css";
 import "mapbox-gl/dist/mapbox-gl.css";
 
 import HeaderBar from "../components/header";
-// import SignUp from "../components/sign-up";
 import Map from "../components/map";
 
 export interface IApplicationProps {
   name?: string;
 }
 const App: React.FunctionComponent<IApplicationProps> = (props) => {
-  const mapBoxToken = process?.env.REACT_APP_MAP_TOKEN || "";
-  const mapBoxStyleURL = process?.env.REACT_APP_MAP_STYLE_URL || "";
-
+  const mapBoxToken = process?.env.REACT_APP_MAPBOX_TOKEN || "";
+  const mapBoxStyleURL = process?.env.REACT_APP_MAPBOX_STYLE_URL || "";
   const [loading, setLoading] = useState<boolean>(false);
   // Monitor and Update user state.
   useEffect(() => {
@@ -31,7 +29,6 @@ const App: React.FunctionComponent<IApplicationProps> = (props) => {
   return (
     <div className="App">
       <div>
-        <HeaderBar name={"vt-atw"} />
         <Map id="vtw-atw" mapboxToken={mapBoxToken} mapStyleURL={mapBoxStyleURL} />
       </div>
       {/* {loading ? <div>Loading...</div> : ""} */}
