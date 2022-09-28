@@ -3,7 +3,13 @@ import { render } from "react-dom";
 import { MapProvider, Map, NavigationControl, Source, Layer } from "react-map-gl";
 import { clusterLayer, clusterCountLayer, unclusteredPointLayer } from "../utils/layers";
 
-import type { MapRef, GeoJSONSource, ViewStateChangeEvent, MapLayerMouseEvent } from "react-map-gl";
+import type {
+  MapRef,
+  GeoJSONSource,
+  ViewStateChangeEvent,
+  MapLayerMouseEvent,
+  LngLatLike
+} from "react-map-gl";
 
 interface IMapProps {
   id: string;
@@ -53,6 +59,7 @@ const MapView: React.FunctionComponent<IMapProps> = ({ id, mapStyleURL, mapboxTo
 
   const spinGlobe = (): void => {
     if (mapRef.current) {
+      console.log("userInteracting", userInteracting);
       const zoom = mapRef.current.getZoom();
       if (spinEnabled && !userInteracting && zoom < maxSpinZoom) {
         let distancePerSecond = 360 / secondsPerRevolution;
@@ -62,10 +69,14 @@ const MapView: React.FunctionComponent<IMapProps> = ({ id, mapStyleURL, mapboxTo
           distancePerSecond *= zoomDif;
         }
         const center = mapRef.current.getCenter();
-        center.lng -= distancePerSecond;
+        const targetLocation: LngLatLike = {
+          lat: center.lat,
+          lng: center.lng - distancePerSecond
+        };
+        // center.lng -= distancePerSecond;
         // Smoothly animate the map over one second.
         // When this animation is complete, it calls a 'moveend' event.
-        mapRef.current?.easeTo({ center, duration: 1000, easing: (n) => n });
+        mapRef.current?.easeTo({ center: targetLocation, duration: 1000, easing: (n) => n });
       }
     }
   };
@@ -75,7 +86,11 @@ const MapView: React.FunctionComponent<IMapProps> = ({ id, mapStyleURL, mapboxTo
     if (mapObject) {
       // Pause spinning on interaction
       mapObject.on("mousedown", () => {
-        setUserInteracting(true);
+        console.log(this);
+        console.log("mousing");
+        // setUserInteracting(true);
+        setUserInteracting((userInteracting) => true);
+        console.log(userInteracting);
       });
 
       // Restart spinning the globe when interaction is complete
@@ -100,6 +115,7 @@ const MapView: React.FunctionComponent<IMapProps> = ({ id, mapStyleURL, mapboxTo
       });
 
       // When animation is complete, start spinning if there is no ongoing interaction
+
       mapObject.on("moveend", () => {
         console.log("moveend");
         spinGlobe();
