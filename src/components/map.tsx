@@ -4,10 +4,10 @@ import { MapPin, PinType } from "./MapPin";
 
 import {
   MapProvider,
-  Map,
   NavigationControl,
   FullscreenControl,
   ScaleControl,
+  Map,
   GeolocateControl
 } from "react-map-gl";
 
@@ -26,7 +26,7 @@ const INITIAL_VIEW_STATE = {
   zoom: 1
 };
 
-const MapSpin: React.FunctionComponent<IMapProps> = ({ id, mapStyleURL, mapboxToken }) => {
+const VtuberMap: React.FunctionComponent<IMapProps> = ({ id, mapStyleURL, mapboxToken }) => {
   const mapRef = useRef<MapRef>(null);
   const [popupInfo, setPopupInfo] = React.useState<PinType | null>(null);
 
@@ -40,24 +40,27 @@ const MapSpin: React.FunctionComponent<IMapProps> = ({ id, mapStyleURL, mapboxTo
 
   return (
     <MapProvider>
-      <Map
-        id={id}
-        initialViewState={INITIAL_VIEW_STATE}
-        style={{ width: "100vw", height: "100vh" }}
-        mapStyle={mapStyleURL}
-        mapboxAccessToken={mapboxToken}
-        projection="globe"
-        ref={mapRef}
-        onRender={(event) => event.target.resize()}>
-        <GeolocateControl position="top-left" />
-        <FullscreenControl position="top-left" />
-        <NavigationControl />
-        <ScaleControl />
-        {pins}
-        {popupInfo && <MapPopUp {...popupInfo} onCloseCallback={() => setPopupInfo(null)} />}
-      </Map>
+      {mapRef.current && (
+        <Map
+          id={id}
+          initialViewState={INITIAL_VIEW_STATE}
+          style={{ width: "100vw", height: "100vh" }}
+          mapStyle={mapStyleURL}
+          mapboxAccessToken={mapboxToken}
+          projection="globe"
+          ref={mapRef}
+          onRender={(event) => event.target.resize()}>
+          <GeolocateControl position="top-left" />
+          <FullscreenControl position="top-left" />
+          <NavigationControl />
+          <ScaleControl />
+          {pins}
+
+          {popupInfo && <MapPopUp {...popupInfo} onCloseCallback={() => setPopupInfo(null)} />}
+        </Map>
+      )}
     </MapProvider>
   );
 };
 
-export default MapSpin;
+export default VtuberMap;
