@@ -1,15 +1,19 @@
-import React, { useState, useRef, useCallback } from "react";
-import { render } from "react-dom";
-import { MapProvider, Map, NavigationControl, Source, Layer, Popup } from "react-map-gl";
-import { clusterLayer, clusterCountLayer, unclusteredPointLayer } from "../utils/layers";
+import React, { useRef, useMemo, useCallback, useState } from "react";
+import { MOCK_DATA } from "../utils/mock-data";
+import { MapPin, PinType } from "./MapPin";
 
-import type {
-  MapRef,
-  GeoJSONSource,
-  ViewStateChangeEvent,
-  MapLayerMouseEvent,
+import {
+  MapProvider,
+  Map,
+  NavigationControl,
+  FullscreenControl,
+  ScaleControl,
+  GeolocateControl,
   LngLatLike
 } from "react-map-gl";
+
+import type { MapRef } from "react-map-gl";
+import MapPopUp from "./MapPopUp";
 
 interface IMapProps {
   id: string;
@@ -25,9 +29,8 @@ const INITIAL_VIEW_STATE = {
 
 const MapSpin: React.FunctionComponent<IMapProps> = ({ id, mapStyleURL, mapboxToken }) => {
   const mapRef = useRef<MapRef>(null);
-  const [spinEnabled, setSpinEnabled] = useState<boolean>(true);
-  const [viewState, setViewState] = useState(INITIAL_VIEW_STATE);
-  const [showPopup, setShowPopup] = React.useState(false);
+  const [spinEnabled, setSpinEnabled] = React.useState<boolean>(true);
+  const [popupInfo, setPopupInfo] = React.useState<PinType | null>(null);
 
   let userInteracting = false;
 
@@ -94,17 +97,14 @@ const MapSpin: React.FunctionComponent<IMapProps> = ({ id, mapStyleURL, mapboxTo
       // off the map, so 'mouseup' will not be fired.
       mapObject.on("dragend", () => {
         userInteracting = false;
-
         spinGlobe();
       });
       mapObject.on("pitchend", () => {
         userInteracting = false;
-
         spinGlobe();
       });
       mapObject.on("rotateend", () => {
         userInteracting = false;
-
         spinGlobe();
       });
 
@@ -118,12 +118,26 @@ const MapSpin: React.FunctionComponent<IMapProps> = ({ id, mapStyleURL, mapboxTo
     spinGlobe();
   }, []);
 
+  const pins = useMemo(
+    () =>
+      MOCK_DATA.map((item) => (
+        <MapPin
+          key={item.id}
+          {...item}
+          onClick={() => {
+            setPopupInfo(item);
+          }}
+        />
+      )),
+    []
+  );
+
   return (
     <MapProvider>
       <Map
         id={id}
         initialViewState={INITIAL_VIEW_STATE}
-        onMove={(event: any) => setViewState(event.viewState)}
+        // onMove={(event: any) => setViewState(event.viewState)}
         style={{ width: "100vw", height: "100vh" }}
         mapStyle={mapStyleURL}
         mapboxAccessToken={mapboxToken}
@@ -131,12 +145,12 @@ const MapSpin: React.FunctionComponent<IMapProps> = ({ id, mapStyleURL, mapboxTo
         projection="globe"
         ref={mapRef}
         onRender={(event) => event.target.resize()}>
-        {showPopup && (
-          <Popup longitude={-100} latitude={40} anchor="bottom" onClose={() => setShowPopup(false)}>
-            You are here
-          </Popup>
-        )}
+        <GeolocateControl position="top-left" />
+        <FullscreenControl position="top-left" />
         <NavigationControl />
+        <ScaleControl />
+        {pins}
+        {popupInfo && <MapPopUp {...popupInfo} onCloseCallback={() => setPopupInfo(null)} />}
       </Map>
     </MapProvider>
   );
