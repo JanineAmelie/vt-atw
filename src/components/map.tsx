@@ -17,6 +17,7 @@ import {
 import type { MapRef } from "react-map-gl";
 import MapPopUp from "./MapPopUp";
 import { convertToGeoJSON } from "../utils/convert-to-geojson";
+import { json } from "stream/consumers";
 
 interface IMapProps {
   id: string;
@@ -39,28 +40,26 @@ const VtuberMap: React.FunctionComponent<IMapProps> = ({ id, mapStyleURL, mapbox
     zoom: 1
   });
 
-  // const pins = useMemo(
-  //   () =>
-  //     MOCK_DATA.map((item) => (
-  //       <MapPin key={item.id} {...item} onClick={() => setPopupInfo(item)} />
-  //     )),
-  //   []
-  // );
+  // when input data with no city,
+  // randomly scatter within country
+  // if city randomly scatter in city
+  // https://observablehq.com/@jeffreymorganio/random-coordinates-within-a-country
 
   const points = convertToGeoJSON(MOCK_DATA);
   const bounds: any = mapRef.current ? mapRef.current.getMap().getBounds().toArray().flat() : null;
+  // const poop: any = bounds ? [...bounds].map((val) => val * 3) : null; // @TODO: discover relation between bounds and
 
+  const bbox: any = [-180, -90, 180, 80];
   const { clusters, supercluster } = useSupercluster({
     points,
-    bounds,
+    bounds: viewState.zoom < 4.5 ? bbox : bounds,
     zoom: viewState.zoom,
-    options: { radius: 75, maxZoom: 5, minZoom: 1, extent: 3000 }
+    options: { radius: 75, maxZoom: 5 }
   });
-
-  // console.log(points);
 
   return (
     <MapProvider>
+      <h1> {JSON.stringify(viewState.zoom)}</h1>
       <Map
         {...viewState}
         id={id}
