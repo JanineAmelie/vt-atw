@@ -1,6 +1,6 @@
 import React, { useState, useRef, useCallback } from "react";
 import { render } from "react-dom";
-import { MapProvider, Map, NavigationControl, Source, Layer } from "react-map-gl";
+import { MapProvider, Map, NavigationControl, Source, Layer, Popup } from "react-map-gl";
 import { clusterLayer, clusterCountLayer, unclusteredPointLayer } from "../utils/layers";
 
 import type {
@@ -25,8 +25,10 @@ const INITIAL_VIEW_STATE = {
 
 const MapSpin: React.FunctionComponent<IMapProps> = ({ id, mapStyleURL, mapboxToken }) => {
   const mapRef = useRef<MapRef>(null);
-  //   const [userInteracting, setUserInteracting] = useState<boolean>(false);
   const [spinEnabled, setSpinEnabled] = useState<boolean>(true);
+  const [viewState, setViewState] = useState(INITIAL_VIEW_STATE);
+  const [showPopup, setShowPopup] = React.useState(false);
+
   let userInteracting = false;
 
   // At low zooms, complete a revolution every two minutes.
@@ -37,26 +39,6 @@ const MapSpin: React.FunctionComponent<IMapProps> = ({ id, mapStyleURL, mapboxTo
   const slowSpinZoom = 3;
 
   /** MAP EVENTS */
-  const onClick = (event: any): void => {
-    if (event.features?.length) {
-      const feature = event.features[0];
-      const clusterId = feature.properties?.cluster_id; //@TODO: change
-
-      const mapboxSource = mapRef.current?.getSource("earthquakes") as GeoJSONSource;
-
-      mapboxSource.getClusterExpansionZoom(clusterId, (err, zoom) => {
-        if (err) {
-          return;
-        }
-
-        mapRef.current?.easeTo({
-          center: feature.geometry.coordinates,
-          zoom,
-          duration: 500
-        });
-      });
-    }
-  };
 
   const spinGlobe = (): void => {
     if (mapRef.current) {
@@ -74,14 +56,10 @@ const MapSpin: React.FunctionComponent<IMapProps> = ({ id, mapStyleURL, mapboxTo
           lat: center.lat,
           lng: center.lng - distancePerSecond
         };
-        // center.lng -= distancePerSecond;
+
         // Smoothly animate the map over one second.
         // When this animation is complete, it calls a 'moveend' event.
-
-        console.log("before", !mapRef.current.isEasing());
         if (!mapRef.current.isEasing()) {
-          console.log("after", !mapRef.current.isEasing());
-
           mapRef.current?.easeTo({ center: targetLocation, duration: 1000, easing: (n) => n });
         }
       }
@@ -95,25 +73,20 @@ const MapSpin: React.FunctionComponent<IMapProps> = ({ id, mapStyleURL, mapboxTo
       mapObject.on("mousedown", () => {
         // setUserInteracting(true);
         userInteracting = true;
-        console.log(userInteracting);
       });
 
       // Restart spinning the globe when interaction is complete
       mapObject.on("mouseup", () => {
         userInteracting = false;
-        console.log("mouseup", userInteracting);
         spinGlobe();
       });
 
       mapObject.on("wheel", () => {
         userInteracting = true;
-        console.log("wheel", userInteracting);
-        // spinGlobe();
       });
 
       mapObject.on("zoomend", () => {
         userInteracting = false;
-        console.log("zoomend", userInteracting);
         spinGlobe();
       });
 
@@ -138,14 +111,13 @@ const MapSpin: React.FunctionComponent<IMapProps> = ({ id, mapStyleURL, mapboxTo
       // When animation is complete, start spinning if there is no ongoing interaction
 
       mapObject.on("moveend", () => {
-        // console.log("moveend");
         spinGlobe();
       });
     }
+
     spinGlobe();
   }, []);
 
-  const [viewState, setViewState] = useState(INITIAL_VIEW_STATE);
   return (
     <MapProvider>
       <Map
@@ -155,25 +127,15 @@ const MapSpin: React.FunctionComponent<IMapProps> = ({ id, mapStyleURL, mapboxTo
         style={{ width: "100vw", height: "100vh" }}
         mapStyle={mapStyleURL}
         mapboxAccessToken={mapboxToken}
-        interactiveLayerIds={[clusterLayer.id || ""]}
-        onClick={onClick}
         onLoad={onMapLoad}
         projection="globe"
         ref={mapRef}
         onRender={(event) => event.target.resize()}>
-        {/* @TODO iterate over data */}
-        <Source
-          id="earthquakes"
-          type="geojson"
-          data="https://docs.mapbox.com/mapbox-gl-js/assets/earthquakes.geojson"
-          cluster={true}
-          clusterMaxZoom={14}
-          clusterRadius={50}>
-          <Layer {...clusterLayer} />
-          <Layer {...clusterCountLayer} />
-          <Layer {...unclusteredPointLayer} />
-        </Source>
-
+        {showPopup && (
+          <Popup longitude={-100} latitude={40} anchor="bottom" onClose={() => setShowPopup(false)}>
+            You are here
+          </Popup>
+        )}
         <NavigationControl />
       </Map>
     </MapProvider>

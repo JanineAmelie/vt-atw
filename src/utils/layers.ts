@@ -30,7 +30,7 @@ export const unclusteredPointLayer: LayerProps = {
   filter: ["!", ["has", "point_count"]],
   paint: {
     "circle-color": "#000",
-    "circle-radius": 4,
+    "circle-radius": 20,
     "circle-stroke-width": 2,
     "circle-stroke-color": "#fff"
   }
