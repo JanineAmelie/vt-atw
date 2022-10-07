@@ -1,10 +1,8 @@
 import React, { useState } from "react";
-// import { Link, useHistory } from "react-router-dom";
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import "firebase/compat/firestore";
 
-// import IPageProps from "../../interfaces/page.interface";
 import { SignInWithSocialMedia } from "../modules/auth";
 import { Providers } from "../config/firebase";
 

@@ -1,5 +1,7 @@
-const convertToGeoJSON = (data: any) => {
-  return data.map((item: any) => ({
+import { PinType } from "../types/types";
+
+const convertToGeoJSON = (data: PinType[]) => {
+  return data.map((item) => ({
     type: "Feature",
     properties: {
       cluster: false,
@@ -9,7 +11,7 @@ const convertToGeoJSON = (data: any) => {
     },
     geometry: {
       type: "Point",
-      coordinates: [parseFloat(item.longitude), parseFloat(item.latitude)]
+      coordinates: [item.longitude, item.latitude]
     }
   }));
 };

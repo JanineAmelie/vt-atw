@@ -3,13 +3,10 @@ import { auth } from "../config/firebase";
 import "./App.css";
 import "mapbox-gl/dist/mapbox-gl.css";
 
-import HeaderBar from "../components/header";
 import Map from "../components/map";
+import { IApplicationProps } from "../types/interfaces";
 
-export interface IApplicationProps {
-  name?: string;
-}
-const App: React.FunctionComponent<IApplicationProps> = (props) => {
+const App: React.FunctionComponent<IApplicationProps> = () => {
   const mapBoxToken = process?.env.REACT_APP_MAPBOX_TOKEN || "";
   const mapBoxStyleURL = process?.env.REACT_APP_MAPBOX_STYLE_URL || "";
   const [loading, setLoading] = useState<boolean>(false);
@@ -31,8 +28,7 @@ const App: React.FunctionComponent<IApplicationProps> = (props) => {
       <div>
         <Map id="vtw-atw" mapboxToken={mapBoxToken} mapStyleURL={mapBoxStyleURL} />
       </div>
-      {/* {loading ? <div>Loading...</div> : ""} */}
-      {/* <SignUp /> */}
+      {loading ? <div>Loading...</div> : ""}
     </div>
   );
 };

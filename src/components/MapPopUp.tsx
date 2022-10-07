@@ -1,14 +1,6 @@
 import React from "react";
-
 import { Popup } from "react-map-gl";
-
-interface IPopupProps {
-  longitude: number;
-  latitude: number;
-  twitterHandle: string;
-  image: string;
-  onCloseCallback: () => void;
-}
+import { IPopupProps } from "../types/interfaces";
 
 const MapPopUp: React.FunctionComponent<IPopupProps> = ({
   longitude,

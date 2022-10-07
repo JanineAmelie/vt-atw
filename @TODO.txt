@@ -1,0 +1,5 @@
+  // @TODO:
+  // when input data with no city,
+  // randomly scatter within country
+  // if city randomly scatter in city
+  // https://observablehq.com/@jeffreymorganio/random-coordinates-within-a-country

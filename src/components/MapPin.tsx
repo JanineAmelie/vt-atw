@@ -1,17 +1,6 @@
 import React from "react";
 import { Marker } from "react-map-gl";
-// import { Link } from "react-router-dom";
-export type PinType = {
-  id: string;
-  longitude: number;
-  latitude: number;
-  image: string;
-  twitterHandle: string;
-};
-
-interface IMapPinProps extends PinType {
-  onClick: () => void;
-}
+import { IMapPinProps } from "../types/interfaces";
 
 const MapPin: React.FunctionComponent<IMapPinProps> = ({
   id,
