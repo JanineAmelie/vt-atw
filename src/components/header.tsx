@@ -1,20 +1,43 @@
 import React from "react";
-import logo from "../assets/logo.svg";
-// import { Link } from "react-router-dom";
+
+import AppBar from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import PublicIcon from "@mui/icons-material/Public";
+
 interface IHeaderProps {
   name: string;
 }
 
 const HeaderBar: React.FunctionComponent<IHeaderProps> = ({ name }) => {
   return (
-    <div>
-      <header className="App-header">
-        {name}
-        <img src={logo} className="App-logo" alt="logo" />
+    <Box sx={{ flexGrow: 1 }}>
+      <AppBar position="static">
+        <Toolbar>
+          <PublicIcon sx={{ mr: 1 }} />
 
-        <h1> hi mods</h1>
-      </header>
-    </div>
+          <Typography
+            variant="h6"
+            noWrap
+            component="a"
+            href="/"
+            sx={{
+              flexGrow: 1,
+              mr: 2,
+              fontFamily: "monospace",
+              fontWeight: 700,
+              letterSpacing: ".3rem",
+              color: "inherit",
+              textDecoration: "none"
+            }}>
+            {name}
+          </Typography>
+          <Button color="secondary">Login</Button>
+        </Toolbar>
+      </AppBar>
+    </Box>
   );
 };
 

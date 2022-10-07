@@ -21,7 +21,15 @@ const MapPin: React.FunctionComponent<IMapPinProps> = ({
         e.originalEvent.stopPropagation();
         onClick();
       }}>
-      <img src={image} width="40" height={40} />
+      <div className="marker">
+        <img
+          src={image}
+          width={40}
+          height={40}
+          style={{ borderRadius: "50%", border: "3px solid white" }}
+        />
+        <div className="beacon" />
+      </div>
     </Marker>
   );
 };

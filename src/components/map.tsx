@@ -3,6 +3,7 @@ import { MOCK_DATA } from "../utils/mock-data";
 import { MapPin } from "./MapPin";
 import useSupercluster from "use-supercluster";
 import { BBox } from "geojson";
+import styled from "@emotion/styled";
 
 import {
   MapProvider,
@@ -20,6 +21,7 @@ import MapPopUp from "./MapPopUp";
 import { convertToGeoJSON } from "../utils/convert-to-geojson";
 import { IMapProps } from "../types/interfaces";
 import { PinType } from "../types/types";
+import { HEADER_BAR_HEIGHT } from "../utils/constants";
 
 const VtuberMap: React.FunctionComponent<IMapProps> = ({ id, mapStyleURL, mapboxToken }) => {
   const mapRef = useRef<MapRef>(null);
@@ -39,6 +41,7 @@ const VtuberMap: React.FunctionComponent<IMapProps> = ({ id, mapStyleURL, mapbox
   }
 
   const bbox: BBox = [-180, -90, 180, 80];
+
   const { clusters, supercluster } = useSupercluster({
     points,
     bounds: viewState.zoom < 4.5 ? bbox : bounds,
@@ -84,12 +87,27 @@ const VtuberMap: React.FunctionComponent<IMapProps> = ({ id, mapStyleURL, mapbox
     };
   };
 
+  const mapStyles = {
+    width: "100vw",
+    height: `calc(100vh - ${HEADER_BAR_HEIGHT}px)`
+  };
+
+  const ClusterMarker = styled("div")`
+    color: #fff;
+    background: #1978c8;
+    border-radius: 50%;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  `;
+
   return (
     <MapProvider>
       <Map
         {...viewState}
         id={id}
-        style={{ width: "100vw", height: "100vh" }}
+        style={mapStyles}
         mapStyle={mapStyleURL}
         mapboxAccessToken={mapboxToken}
         projection="globe"
@@ -113,12 +131,11 @@ const VtuberMap: React.FunctionComponent<IMapProps> = ({ id, mapStyleURL, mapbox
           if (isCluster) {
             return (
               <Marker key={`cluster-${cluster.id}`} latitude={latitude} longitude={longitude}>
-                <div
-                  className="cluster-marker"
+                <ClusterMarker
                   style={getClusterSize(pointCount)}
                   onClick={() => handleClusterClick(cluster.id, latitude, longitude)}>
                   {pointCount}
-                </div>
+                </ClusterMarker>
               </Marker>
             );
           }

@@ -1,0 +1,3 @@
+const HEADER_BAR_HEIGHT = 64;
+
+export { HEADER_BAR_HEIGHT };

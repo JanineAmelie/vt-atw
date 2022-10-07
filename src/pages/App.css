@@ -1,30 +1,69 @@
-
-#btn-spin {
-  font: bold 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
-  background-color: #3386c0;
+.cluster-marker {
   color: #fff;
-  position: absolute;
-  top: 20px;
-  left: 50%;
-  z-index: 1;
-  border: none;
-  width: 200px;
-  margin-left: -100px;
-  display: block;
-  cursor: pointer;
-  padding: 10px 20px;
-  border-radius: 3px;
-  }
-  #btn-spin:hover {
-  background-color: #4ea0da;
-  }
+  background: #1978c8;
+  border-radius: 50%;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-  .cluster-marker {
-    color: #fff;
-    background: #1978c8;
-    border-radius: 50%;
-    padding: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.beacon {
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  height: 3em;
+  width: 3em;
+  border-radius: 50%;
+  -webkit-transform: translateX(-50%);
+  -o-transform: translateX(-50%);
+  -moz-transform: translateX(-50%);
+  -ms-transform: translateX(-50%);
+  transform: translateX(-50%);
+  z-index: -1
+}
+
+.beacon:before,
+.beacon:after {
+  position: absolute;
+  content: "";
+  height: 3em;
+  width: 3em;
+  left: 0;
+  top: 0;
+  background-color: transparent;
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px #ed1f34;
+  -webkit-animation: active 2s infinite linear;
+  -moz-animation: active 2s infinite linear;
+  animation: active 2s infinite linear;
+}
+
+.beacon:after {
+  -moz-animation-delay: 1s;
+  -webkit-animation-delay: 1s;
+  animation-delay: 1s;
+}
+
+@-webkit-keyframes active {
+  0% {
+    -webkit-transform: scale(.1);
+    opacity: 1;
   }
+  100% {
+    -webkit-transform: scale(2.5);
+    opacity: 0;
+  }
+}
+
+@keyframes active {
+  0% {
+    transform: scale(.1);
+    transform: box-shadow(0px 0px 0px 1px #ed1f34);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(2.5);
+    opacity: 0;
+  }
+}

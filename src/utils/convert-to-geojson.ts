@@ -1,6 +1,7 @@
 import { PinType } from "../types/types";
 
-const convertToGeoJSON = (data: PinType[]) => {
+// @TODO: types
+const convertToGeoJSON = (data: PinType[]): any => {
   return data.map((item) => ({
     type: "Feature",
     properties: {
