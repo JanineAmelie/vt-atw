@@ -5,7 +5,7 @@ import { Popup } from "react-map-gl";
 interface IPopupProps {
   longitude: number;
   latitude: number;
-  twitter_handle: string;
+  twitterHandle: string;
   image: string;
   onCloseCallback: () => void;
 }
@@ -13,7 +13,7 @@ interface IPopupProps {
 const MapPopUp: React.FunctionComponent<IPopupProps> = ({
   longitude,
   latitude,
-  twitter_handle,
+  twitterHandle,
   image,
   onCloseCallback
 }) => {
@@ -26,8 +26,8 @@ const MapPopUp: React.FunctionComponent<IPopupProps> = ({
         onClose={() => onCloseCallback()}>
         <div>
           {latitude}, {longitude} |{" "}
-          <a target="_new" href={`https://twitter.com/${twitter_handle}`}>
-            {`@${twitter_handle}`}
+          <a target="_new" href={`https://twitter.com/${twitterHandle}`}>
+            {`@${twitterHandle}`}
           </a>
         </div>
         <img width="100%" src={image} />

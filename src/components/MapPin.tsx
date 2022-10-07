@@ -6,7 +6,7 @@ export type PinType = {
   longitude: number;
   latitude: number;
   image: string;
-  twitter_handle: string;
+  twitterHandle: string;
 };
 
 interface IMapPinProps extends PinType {

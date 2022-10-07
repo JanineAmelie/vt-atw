@@ -4,7 +4,7 @@ const convertToGeoJSON = (data: any) => {
     properties: {
       cluster: false,
       id: item.id,
-      twitterHandle: item.twitter_handle,
+      twitterHandle: item.twitterHandle,
       image: item.image
     },
     geometry: {
