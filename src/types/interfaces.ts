@@ -19,4 +19,5 @@ export interface IPopupProps {
 
 export interface IMapPinProps extends PinType {
   onClick: () => void;
+  isLive?: boolean;
 }

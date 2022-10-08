@@ -1,6 +1,5 @@
 import React, { useRef, useState } from "react";
-import { MOCK_DATA } from "../utils/mock-data";
-import { MapPin } from "./MapPin";
+import type { MapRef } from "react-map-gl";
 import useSupercluster from "use-supercluster";
 import { BBox } from "geojson";
 import styled from "@emotion/styled";
@@ -16,12 +15,15 @@ import {
   ViewStateChangeEvent
 } from "react-map-gl";
 
-import type { MapRef } from "react-map-gl";
-import MapPopUp from "./MapPopUp";
+import { MOCK_DATA } from "../utils/mock-data";
 import { convertToGeoJSON } from "../utils/convert-to-geojson";
+import { HEADER_BAR_HEIGHT } from "../utils/constants";
+
+import { MapPin } from "./MapPin";
+import MapPopUp from "./MapPopUp";
+
 import { IMapProps } from "../types/interfaces";
 import { PinType } from "../types/types";
-import { HEADER_BAR_HEIGHT } from "../utils/constants";
 
 const VtuberMap: React.FunctionComponent<IMapProps> = ({ id, mapStyleURL, mapboxToken }) => {
   const mapRef = useRef<MapRef>(null);
@@ -33,7 +35,7 @@ const VtuberMap: React.FunctionComponent<IMapProps> = ({ id, mapStyleURL, mapbox
   });
 
   /* Clustering Logic and "Viewbox" */
-  const points = convertToGeoJSON(MOCK_DATA);
+  const points = convertToGeoJSON(MOCK_DATA); // Prepare Data
   let bounds: BBox | undefined = undefined; // @TODO: double check typing and guards
 
   if (mapRef.current) {
@@ -49,6 +51,7 @@ const VtuberMap: React.FunctionComponent<IMapProps> = ({ id, mapStyleURL, mapbox
     options: { radius: 75, maxZoom: 5 }
   });
 
+  /** EVENT HANDLERS */
   const handleMove = (evt: ViewStateChangeEvent) => {
     setViewState(evt.viewState);
   };
@@ -92,16 +95,6 @@ const VtuberMap: React.FunctionComponent<IMapProps> = ({ id, mapStyleURL, mapbox
     height: `calc(100vh - ${HEADER_BAR_HEIGHT}px)`
   };
 
-  const ClusterMarker = styled("div")`
-    color: #fff;
-    background: #1978c8;
-    border-radius: 50%;
-    padding: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  `;
-
   return (
     <MapProvider>
       <Map
@@ -131,11 +124,11 @@ const VtuberMap: React.FunctionComponent<IMapProps> = ({ id, mapStyleURL, mapbox
           if (isCluster) {
             return (
               <Marker key={`cluster-${cluster.id}`} latitude={latitude} longitude={longitude}>
-                <ClusterMarker
+                <SClusterMarker
                   style={getClusterSize(pointCount)}
                   onClick={() => handleClusterClick(cluster.id, latitude, longitude)}>
                   {pointCount}
-                </ClusterMarker>
+                </SClusterMarker>
               </Marker>
             );
           }
@@ -164,5 +157,15 @@ const VtuberMap: React.FunctionComponent<IMapProps> = ({ id, mapStyleURL, mapbox
     </MapProvider>
   );
 };
+
+const SClusterMarker = styled.div`
+  color: #fff;
+  background: #1978c8;
+  border-radius: 50%;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 
 export default VtuberMap;
