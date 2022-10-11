@@ -1,119 +1,142 @@
 import React from "react";
 import { Popup } from "react-map-gl";
 import { IPopupProps } from "../types/interfaces";
-import cx from "clsx";
-// import { makeStyles } from "@material-ui/core/styles";
 import styled from "@emotion/styled";
-// import Card from "@material-ui/core/Card";
-// import CardMedia from "@material-ui/material/CardMedia";
-
-import { CardMedia, Card, CardContent } from "@mui/material";
-// import CardContent from "@material-ui/core/CardContent";
-// import Button from "@material-ui/core/Button";
-// import TextInfoContent from "@mui-treasury/components/content/textInfo";
-// import { useBlogTextInfoContentStyles } from "@mui-treasury/styles/textInfoContent/blog";
-// import { useOverShadowStyles } from "@mui-treasury/styles/shadow/over";
+import { List, ListItem, ListItemIcon, ListItemText } from "@mui/material";
+import { Flag, LocationCity, Link } from "@mui/icons-material";
 
 const MapPopUp: React.FunctionComponent<IPopupProps> = ({
   longitude,
   latitude,
   twitterHandle,
   image,
+  city,
+  country,
+  url,
+  name,
   onCloseCallback
 }) => {
+  const LinksList = [
+    {
+      text: city ? city : " - ",
+      icon: <LocationCity />
+    },
+    {
+      text: country ? country : " - ",
+      icon: <Flag />
+    },
+    {
+      isLink: true,
+      text: url ? url : "-",
+      icon: <Link />
+    }
+  ];
   return (
-    <div>
-      <SPopup
-        anchor="top"
-        longitude={Number(longitude)}
-        latitude={Number(latitude)}
-        onClose={() => onCloseCallback()}>
-        <div>
-          {latitude}, {longitude} |{" "}
-          <a target="_new" href={`https://twitter.com/${twitterHandle}`}>
-            {`@${twitterHandle}`}
-          </a>
-        </div>
-        <img width="100%" src={image} />
-      </SPopup>
-    </div>
+    <SPopup
+      anchor="top"
+      maxWidth="400"
+      longitude={Number(longitude)}
+      latitude={Number(latitude)}
+      onClose={() => onCloseCallback()}>
+      <STextContainer>
+        <SImage width="100%" src={image} />
+        <STextBox>
+          <Sh2>{name}</Sh2>
+          <h3>{`@${twitterHandle}`}</h3>
+        </STextBox>
+      </STextContainer>
+
+      <div className="two">
+        <SList dense={true}>
+          {LinksList.map(({ text, icon, isLink }, index) => (
+            <SListItem key={`key-${index}`}>
+              <ListItemIcon>{icon}</ListItemIcon>
+              <SListItemText>
+                {isLink && text !== "-" ? (
+                  <a href={text} target="_blank" rel="noreferrer">
+                    {text}
+                  </a>
+                ) : (
+                  <span>{text}</span>
+                )}
+              </SListItemText>
+            </SListItem>
+          ))}
+        </SList>
+      </div>
+    </SPopup>
   );
 };
-const SPopup = styled(Popup)`
+
+const STextBox = styled.figcaption`
   position: relative;
-  background: transparent;
-  border-radius: 3px;
-  box-shadow: none;
+  justify-content: flex-end;
+  padding-left: 10px;
+`;
+
+const STextContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+`;
+
+const SListItemText = styled(ListItemText)`
+  span {
+    width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+`;
+
+const SList = styled(List)`
   padding: 0;
 `;
 
-const SCard = styled(Card)`
-  margin: auto;
+const SListItem = styled(ListItem)`
+  padding: 0;
+  margin-bottom: -4px;
+`;
+
+const SPopup = styled(Popup)`
   border-radius: 16px;
   transition: 0.3s;
-  box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
-  position: relative;
-  max-width: 500;
   margin-left: auto;
-  overflow: initial;
-  background: #ffffff;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-bottom: 16px;
-  flex-direction: row;
-  padding-top: 16px;
+  box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
+  background: #fff;
+  border-radius: 5px;
+  min-width: 300px;
+  padding: 20px;
+
+  .mapboxgl-popup-content {
+    box-shadow: none;
+    padding: 0;
+  }
+
+  .mapboxgl-popup-close-button {
+    top: -33px;
+    right: -16px;
+    font-size: 3em;
+  }
 `;
-const SMedia = styled(CardMedia)`
 
-width: 88%;
-margin-left: auto;
-margin-right: auto;
-margin-top: 24px;
-height: 0;
-padding-bottom: 48%;
-border-radius: 16px;
-background-color: #fff;
-position: relative;
-width: 100%;
-margin-left: -24px;
-margin-top: 0;
-transform: translateX(-8px);
+const SImage = styled.img`
+  max-width: 100px;
+  margin-top: -40px;
+  margin-left: -100px;
+  backface-visibility: hidden;
+  vertical-align: top;
+  border-radius: 55px;
+`;
 
-&:after: {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: linear-gradient(147deg, #fe8a39 0%, #fd3838 74%);
-  border-radius: 16px;
-  opacity: 0.5;
+const Sh2 = styled.h2`
+  font-family: como, sans-serif;
+  font-style: normal;
+  font-weight: 800;
+  width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 18px;
 `;
 
 export default MapPopUp;
-
-/**
- * 
- * <SCard>
-          <SMedia
-            image={
-              "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Git_icon.svg/2000px-Git_icon.svg.png"
-            }
-          />
-          <CardContent>
-            Git is a distributed version control system. Every dev has a working copy of the code
-            and...
-            {/* <TextInfoContent
-              classes={contentStyles}
-              overline={"28 MAR 2019"}
-              heading={"What is Git ?"}
-              body={
-                "Git is a distributed version control system. Every dev has a working copy of the code and..."
-              }
-            /> 
-            // {/* <Button className={buttonStyles}>Read more</Button> 
-            </CardContent>
-            </SCard>
- */

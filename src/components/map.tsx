@@ -22,12 +22,11 @@ import { HEADER_BAR_HEIGHT } from "../utils/constants";
 import { MapPin } from "./MapPin";
 import MapPopUp from "./MapPopUp";
 
-import { IMapProps } from "../types/interfaces";
-import { PinType } from "../types/types";
+import { IMapProps, IPopupProps } from "../types/interfaces";
 
 const VtuberMap: React.FunctionComponent<IMapProps> = ({ id, mapStyleURL, mapboxToken }) => {
   const mapRef = useRef<MapRef>(null);
-  const [popupInfo, setPopupInfo] = useState<PinType | null>(null);
+  const [popupInfo, setPopupInfo] = useState<IPopupProps | null>();
   const [viewState, setViewState] = React.useState({
     longitude: -100,
     latitude: 40,
@@ -56,7 +55,7 @@ const VtuberMap: React.FunctionComponent<IMapProps> = ({ id, mapStyleURL, mapbox
     setViewState(evt.viewState);
   };
 
-  const handleMarkerClick = (markerData: PinType) => {
+  const handleMarkerClick = (markerData: IPopupProps) => {
     const { latitude, longitude } = markerData;
 
     // move to the clicked cluster
@@ -113,13 +112,7 @@ const VtuberMap: React.FunctionComponent<IMapProps> = ({ id, mapStyleURL, mapbox
         <ScaleControl />
         {clusters.map((cluster) => {
           const [longitude, latitude] = cluster.geometry.coordinates;
-          const {
-            cluster: isCluster,
-            point_count: pointCount,
-            id,
-            image,
-            twitterHandle
-          } = cluster.properties;
+          const { cluster: isCluster, point_count: pointCount, id, image } = cluster.properties;
 
           if (isCluster) {
             return (
@@ -137,7 +130,6 @@ const VtuberMap: React.FunctionComponent<IMapProps> = ({ id, mapStyleURL, mapbox
             <MapPin
               key={`point-${id}`}
               id={id}
-              twitterHandle={twitterHandle}
               image={image}
               latitude={latitude}
               longitude={longitude}
