@@ -7,9 +7,9 @@ export type PinType = {
 
 export type dataItem = {
   id: string;
-  longitude: number;
-  latitude: number;
-  twitterHandle: string;
   image: string;
+  latitude: number;
+  longitude: number;
+  twitterHandle: string;
   url: string;
 };
