@@ -1,11 +1,11 @@
-export type PinType = {
+export type Pin = {
   id: string;
   longitude: number;
   latitude: number;
   image: string;
 };
 
-export type dataItem = {
+export type DataItem = {
   id: string;
   image: string;
   latitude: number;

@@ -1,5 +1,14 @@
-  // @TODO:
+@TODO:
   // when input data with no city,
   // randomly scatter within country
   // if city randomly scatter in city
   // https://observablehq.com/@jeffreymorganio/random-coordinates-within-a-country
+
+
+@TODO:
+  // fetch users pass down to prop
+
+@TODO: 
+  // Sign up-plot modal
+
+@

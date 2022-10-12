@@ -1,7 +1,7 @@
-import { dataItem } from "../types/types";
+import { DataItem } from "../types/types";
 
 // @TODO: types
-const convertToGeoJSON = (data: dataItem[]): any => {
+const convertToGeoJSON = (data: DataItem[]): any => {
   return data.map((item) => ({
     type: "Feature",
     properties: {

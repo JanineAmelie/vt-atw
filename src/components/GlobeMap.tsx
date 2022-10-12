@@ -15,7 +15,6 @@ import {
   ViewStateChangeEvent
 } from "react-map-gl";
 
-import { MOCK_DATA } from "../utils/mock-data";
 import { convertToGeoJSON } from "../utils/convert-to-geojson";
 import { HEADER_BAR_HEIGHT } from "../utils/constants";
 
@@ -24,7 +23,7 @@ import MapPopUp from "./MapPopUp";
 
 import { IMapProps, IPopupProps } from "../types/interfaces";
 
-const VtuberMap: React.FunctionComponent<IMapProps> = ({ id, mapStyleURL, mapboxToken }) => {
+const GlobeMap: React.FunctionComponent<IMapProps> = ({ id, mapStyleURL, mapboxToken }) => {
   const mapRef = useRef<MapRef>(null);
   const [popupInfo, setPopupInfo] = useState<IPopupProps | null>();
   const [viewState, setViewState] = React.useState({
@@ -34,7 +33,7 @@ const VtuberMap: React.FunctionComponent<IMapProps> = ({ id, mapStyleURL, mapbox
   });
 
   /* Clustering Logic and "Viewbox" */
-  const points = convertToGeoJSON(MOCK_DATA); // Prepare Data
+  const points = convertToGeoJSON([]); // Prepare Data
   let bounds: BBox | undefined = undefined; // @TODO: double check typing and guards
 
   if (mapRef.current) {
@@ -160,4 +159,4 @@ const SClusterMarker = styled.div`
   align-items: center;
 `;
 
-export default VtuberMap;
+export default GlobeMap;

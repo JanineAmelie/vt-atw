@@ -695,3 +695,5 @@ const country_bounding_boxes = {
     bbox: [25.2642257016, -22.2716118303, 32.8498608742, -15.5077869605]
   }
 };
+
+export { country_bounding_boxes };

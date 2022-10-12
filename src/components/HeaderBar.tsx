@@ -9,9 +9,10 @@ import PublicIcon from "@mui/icons-material/Public";
 
 interface IHeaderProps {
   name: string;
+  loginText: string;
 }
 
-const HeaderBar: React.FunctionComponent<IHeaderProps> = ({ name }) => {
+const HeaderBar: React.FunctionComponent<IHeaderProps> = ({ name, loginText }) => {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">

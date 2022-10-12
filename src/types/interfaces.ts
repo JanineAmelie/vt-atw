@@ -1,4 +1,4 @@
-import { PinType } from "./types";
+import { Pin } from "./types";
 
 export interface IMapProps {
   id: string;
@@ -22,7 +22,7 @@ export interface IPopupProps {
   onCloseCallback: () => void;
 }
 
-export interface IMapPinProps extends PinType {
+export interface IMapPinProps extends Pin {
   onClick: () => void;
   isLive?: boolean;
 }
