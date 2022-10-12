@@ -15,7 +15,7 @@ import {
   ViewStateChangeEvent
 } from "react-map-gl";
 
-import { convertToGeoJSON } from "../utils/convert-to-geojson";
+import { convertToGeoJSON } from "../utils/data-normalization-utils";
 import { HEADER_BAR_HEIGHT } from "../utils/constants";
 
 import { MapPin } from "./MapPin";

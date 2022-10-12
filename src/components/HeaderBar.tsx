@@ -4,15 +4,20 @@ import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
 import PublicIcon from "@mui/icons-material/Public";
+import { TwitterLoginButton } from "./TwitterButton";
+import { UserButton } from "./UserButton";
+import { AuthedUser } from "../types/types";
+import { intl } from "../utils/intl";
 
 interface IHeaderProps {
-  name: string;
-  loginText: string;
+  onButtonClick: () => void;
+  user?: AuthedUser;
 }
 
-const HeaderBar: React.FunctionComponent<IHeaderProps> = ({ name, loginText }) => {
+const HeaderBar: React.FunctionComponent<IHeaderProps> = ({ onButtonClick, user }) => {
+  const { global } = intl.en;
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -22,8 +27,8 @@ const HeaderBar: React.FunctionComponent<IHeaderProps> = ({ name, loginText }) =
           <Typography
             variant="h6"
             noWrap
-            component="a"
-            href="/"
+            // component="a"
+            // href="/"
             sx={{
               flexGrow: 1,
               mr: 2,
@@ -33,9 +38,22 @@ const HeaderBar: React.FunctionComponent<IHeaderProps> = ({ name, loginText }) =
               color: "inherit",
               textDecoration: "none"
             }}>
-            {name}
+            {global.appTitle}
           </Typography>
-          <Button color="secondary">Login</Button>
+          {user ? (
+            <UserButton
+              onClick={() => onButtonClick()}
+              avatarUrl=""
+              userName=""
+              tooltipText={global.editMarker}
+            />
+          ) : (
+            <TwitterLoginButton
+              onClick={() => onButtonClick()}
+              tooltipText={global.signUpToolTip}
+              buttonText={global.loginWithTwitter}
+            />
+          )}
         </Toolbar>
       </AppBar>
     </Box>

@@ -13,3 +13,12 @@ export type DataItem = {
   twitterHandle: string;
   url: string;
 };
+
+export type AuthedUser = {
+  id: string;
+  name: string;
+  username: string;
+  description: string;
+  image: string;
+  url: string;
+};

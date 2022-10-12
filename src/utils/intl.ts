@@ -4,9 +4,11 @@ const intl = {
   en: {
     global: {
       appTitle: "VT-ATW",
-      fulltitle: "VTubers around the World",
-      login: "Login",
-      loading: "Loading"
+      fullTitle: "VTubers around the World",
+      loginWithTwitter: "Login with Twitter",
+      loading: "Loading",
+      editMarker: "Edit Marker",
+      signUpToolTip: "Login with twitter to make your mark!"
     },
     api: {
       successUserDetected: "User Detected",
