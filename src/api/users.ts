@@ -1,35 +1,35 @@
 import firebase from "firebase/compat/app"; // @TODO: what is this
 import { DataItem } from "../types/types";
 import { FIREBASE_COLLECTION_USERS } from "../utils/constants";
+const db = firebase.firestore();
 
-const fetchUsers = () => {
-  firebase
-    .firestore()
+const dbGetAllUsers = () => {
+  const results: any[] = [];
+
+  return db
     .collection(FIREBASE_COLLECTION_USERS)
     .get()
     .then((querySnapshot) => {
       querySnapshot.forEach((user) => {
-        console.log(user.data());
-        // this.setState({
-        //   data: [...this.state.data, doc.data()]
-        // });
+        results.push(user.data());
       });
+    })
+    .then(() => {
+      return results;
     })
     .catch(function (error) {
       console.error("Error fetching users: ", error);
     });
 };
 
-const setUser = (obj: DataItem) => {
-  firebase
-    .firestore()
+const dbAddUser = (obj: DataItem) => {
+  return db
     .collection(FIREBASE_COLLECTION_USERS)
     .doc(obj.id)
     .set(obj)
-    .then(() => fetchUsers())
     .catch(function (error) {
       console.error("Error adding user: ", error);
     });
 };
 
-export { fetchUsers, setUser };
+export { dbGetAllUsers, dbAddUser };

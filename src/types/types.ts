@@ -16,9 +16,6 @@ export type DataItem = {
 
 export type AuthedUser = {
   id: string;
-  name: string;
-  username: string;
-  description: string;
   image: string;
-  url: string;
+  name: string;
 };

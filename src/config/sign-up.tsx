@@ -3,7 +3,7 @@ import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import "firebase/compat/firestore";
 
-import { SignInWithSocialMedia } from "../modules/auth";
+import { SignInWithSocialMedia } from "../api/auth";
 import { Providers } from "../config/firebase";
 
 const SignUp: React.FunctionComponent = () => {

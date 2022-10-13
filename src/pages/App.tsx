@@ -11,19 +11,24 @@ import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import "firebase/compat/firestore";
 
-import { SignInWithSocialMedia } from "../modules/auth";
+import { SignInWithSocialMedia } from "../api/auth";
 import { Providers } from "../config/firebase";
 import { normalizeTwitterAuthResponse } from "../utils/data-normalization-utils";
+import { dbGetAllUsers, dbAddUser } from "../api/users";
+import { LoadingBackdrop } from "../components/LoadingBackdrop";
+import { AuthedUser } from "../types/types";
 
 const App: React.FunctionComponent<IApplicationProps> = () => {
   const mapBoxToken = process?.env.REACT_APP_MAPBOX_TOKEN || "";
   const mapBoxStyleURL = process?.env.REACT_APP_MAPBOX_STYLE_URL || "";
   const [dialogOpen, setDialogOpen] = React.useState(false);
-  const [user, setUser] = React.useState<any>();
+  const [users, setUsers] = React.useState<any>();
+  const [user, setUser] = React.useState<null | AuthedUser>(null);
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const { en } = intl;
 
+  // @TODO: Edgecase what happens when user logins with changed name?
   const signInWithSocialMedia = (provider: firebase.auth.AuthProvider) => {
     if (error !== "") setError("");
 
@@ -31,35 +36,51 @@ const App: React.FunctionComponent<IApplicationProps> = () => {
 
     SignInWithSocialMedia(provider)
       .then((result) => {
-        console.log("LOGGED IN!");
-        console.log(result);
+        if (result.additionalUserInfo?.isNewUser) {
+          console.log("NEW USER!!! result", result);
+          const normalizedData = normalizeTwitterAuthResponse(result);
+          dbAddUser(normalizedData)
+            .then(() => dbGetAllUsers())
+            .then(() => setLoading(false));
+        }
       })
       .catch((error) => {
         setLoading(false);
         setError(error.message);
       });
   };
-  useEffect(() => {
+
+  const handleAuthStateChange = () => {
     auth.onAuthStateChanged((user) => {
       if (user) {
-        console.log(en.api.successUserDetected);
-        console.log(auth.currentUser?.uid);
-
-        //handle cases when user is recurring :( no user
-        // new user
-        // normalize existing data
-
-        // returning user
-        // fetch data
-
-        const normalizedData = normalizeTwitterAuthResponse(user);
-        console.log(normalizedData);
-        setUser(normalizedData);
+        const uid = auth.currentUser?.providerData[0]?.uid;
+        console.log(en.api.successUserDetected, uid);
+        if (uid) {
+          setUser({
+            id: uid,
+            image: auth.currentUser?.photoURL || "",
+            name: auth.currentUser?.displayName || ""
+          });
+        } else {
+          console.error("Error getting user UID");
+        }
       } else {
         console.log(en.api.errorNoUserDetected);
       }
       setLoading(false);
     });
+  };
+
+  useEffect(() => {
+    setLoading(true);
+    // Always fetch all users first
+    dbGetAllUsers()
+      .then((users) => {
+        setUsers(users);
+      })
+      .then(() => {
+        handleAuthStateChange();
+      });
   }, []);
 
   const handleHeaderButtonClick = () => {
@@ -73,11 +94,10 @@ const App: React.FunctionComponent<IApplicationProps> = () => {
 
   return (
     <div className="App">
+      <LoadingBackdrop loading={loading} />
       <AddMarkerDialog handleClose={() => setDialogOpen(false)} open={dialogOpen} />
-
       <HeaderBar user={user} onButtonClick={() => handleHeaderButtonClick()} />
       <GlobeMap id="vtw-atw" mapboxToken={mapBoxToken} mapStyleURL={mapBoxStyleURL} />
-      {loading ? <div>{en.global.loading}</div> : ""}
     </div>
   );
 };

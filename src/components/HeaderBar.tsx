@@ -12,7 +12,7 @@ import { intl } from "../utils/intl";
 
 interface IHeaderProps {
   onButtonClick: () => void;
-  user?: AuthedUser;
+  user: AuthedUser | null;
 }
 
 const HeaderBar: React.FunctionComponent<IHeaderProps> = ({ onButtonClick, user }) => {
@@ -27,8 +27,6 @@ const HeaderBar: React.FunctionComponent<IHeaderProps> = ({ onButtonClick, user 
           <Typography
             variant="h6"
             noWrap
-            // component="a"
-            // href="/"
             sx={{
               flexGrow: 1,
               mr: 2,
@@ -43,8 +41,8 @@ const HeaderBar: React.FunctionComponent<IHeaderProps> = ({ onButtonClick, user 
           {user ? (
             <UserButton
               onClick={() => onButtonClick()}
-              avatarUrl=""
-              userName=""
+              avatarUrl={user.image}
+              userName={user.name}
               tooltipText={global.editMarker}
             />
           ) : (
