@@ -13,6 +13,10 @@ const intl = {
     api: {
       successUserDetected: "User Detected",
       errorNoUserDetected: "No user Detected"
+    },
+    menuItems: {
+      accountSettings: "Account Settings",
+      logout: "Logout"
     }
   }
 };

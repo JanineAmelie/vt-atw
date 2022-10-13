@@ -1,13 +1,14 @@
 import { DataItem } from "../types/types";
-
+import "firebase/compat/auth";
+import "firebase/compat/firestore";
 // @TODO: types
-const convertToGeoJSON = (data: DataItem[]): any => {
+const convertToGeoJSON = (data: DataItem[]) => {
   return data.map((item) => ({
     type: "Feature",
     properties: {
       cluster: false,
       id: item.id,
-      twitterHandle: item?.twitterHandle || "",
+      twitterHandle: item?.username || "",
       image: item?.image || "",
       url: item?.url || ""
     },
@@ -18,7 +19,8 @@ const convertToGeoJSON = (data: DataItem[]): any => {
   }));
 };
 
-const normalizeTwitterAuthResponse = (data: any): any => {
+// @TODO: any
+const normalizeTwitterAuthResponse = (data: any) => {
   const { id_str, name, description, profile_image_url, entities } =
     data.additionalUserInfo.profile;
   const { username } = data.additionalUserInfo;

@@ -7,10 +7,20 @@ import "firebase/compat/firestore";
 
 import { auth } from "../config/firebase";
 
-export const SignInWithSocialMedia = (provider: firebase.auth.AuthProvider) =>
+const SignInWithSocialMedia = (provider: firebase.auth.AuthProvider) =>
   new Promise<firebase.auth.UserCredential>((resolve, reject) => {
     auth
       .signInWithPopup(provider)
       .then((result) => resolve(result))
       .catch((error) => reject(error));
   });
+
+const SignOut = () =>
+  new Promise((resolve, reject) => {
+    auth
+      .signOut()
+      .then((result) => resolve(result))
+      .catch((error) => reject(error));
+  });
+
+export { SignInWithSocialMedia, SignOut };

@@ -6,7 +6,7 @@ import Tooltip from "@mui/material/Tooltip";
 
 interface TwitterLoginButton {
   buttonText: string;
-  onClick: () => void;
+  onClick: React.MouseEventHandler<HTMLButtonElement>;
   tooltipText: string;
 }
 
@@ -27,7 +27,7 @@ const TwitterLoginButton: React.FunctionComponent<TwitterLoginButton> = ({
   onClick
 }) => (
   <Tooltip title={tooltipText}>
-    <STwitterLoginButton variant="contained" startIcon={<TwitterIcon />} onClick={() => onClick()}>
+    <STwitterLoginButton variant="contained" startIcon={<TwitterIcon />} onClick={onClick}>
       {buttonText}
     </STwitterLoginButton>
   </Tooltip>

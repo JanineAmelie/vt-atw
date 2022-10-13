@@ -11,13 +11,12 @@ import { AuthedUser } from "../types/types";
 import { intl } from "../utils/intl";
 
 interface IHeaderProps {
-  onButtonClick: () => void;
+  onButtonClick: (menuItem: string) => void;
   user: AuthedUser | null;
 }
 
 const HeaderBar: React.FunctionComponent<IHeaderProps> = ({ onButtonClick, user }) => {
   const { global } = intl.en;
-
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -40,14 +39,14 @@ const HeaderBar: React.FunctionComponent<IHeaderProps> = ({ onButtonClick, user 
           </Typography>
           {user ? (
             <UserButton
-              onClick={() => onButtonClick()}
+              onMenuClick={(menuItem: string) => onButtonClick(menuItem)}
               avatarUrl={user.image}
               userName={user.name}
               tooltipText={global.editMarker}
             />
           ) : (
             <TwitterLoginButton
-              onClick={() => onButtonClick()}
+              onClick={() => onButtonClick("")}
               tooltipText={global.signUpToolTip}
               buttonText={global.loginWithTwitter}
             />

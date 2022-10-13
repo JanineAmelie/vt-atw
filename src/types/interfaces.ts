@@ -1,4 +1,5 @@
-import { Pin } from "./types";
+import { UserCredential } from "firebase/auth";
+import { Pin, TwitterEntities } from "./types";
 
 export interface IMapProps {
   id: string;
@@ -25,4 +26,17 @@ export interface IPopupProps {
 export interface IMapPinProps extends Pin {
   onClick: () => void;
   isLive?: boolean;
+}
+
+export interface TwitterData extends UserCredential {
+  additionalUserInfo: {
+    profile: {
+      id_str: string;
+      name: string;
+      description: string;
+      profile_image_url: string;
+      entities: TwitterEntities;
+    };
+    username: string;
+  };
 }

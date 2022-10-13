@@ -46,24 +46,22 @@ const MapPopUp: React.FunctionComponent<IPopupProps> = ({
         </STextBox>
       </STextContainer>
 
-      <div className="two">
-        <SList dense={true}>
-          {LinksList.map(({ text, icon, isLink }, index) => (
-            <SListItem key={`key-${index}`}>
-              <ListItemIcon>{icon}</ListItemIcon>
-              <SListItemText>
-                {isLink && text !== "-" ? (
-                  <a href={text} target="_blank" rel="noreferrer">
-                    {text}
-                  </a>
-                ) : (
-                  <span>{text}</span>
-                )}
-              </SListItemText>
-            </SListItem>
-          ))}
-        </SList>
-      </div>
+      <SList dense={true}>
+        {LinksList.map(({ text, icon, isLink }, index) => (
+          <SListItem key={`key-${index}`}>
+            <ListItemIcon>{icon}</ListItemIcon>
+            <SListItemText>
+              {isLink && text !== "-" ? (
+                <a href={text} target="_blank" rel="noreferrer">
+                  {text}
+                </a>
+              ) : (
+                <span>{text}</span>
+              )}
+            </SListItemText>
+          </SListItem>
+        ))}
+      </SList>
     </SPopup>
   );
 };

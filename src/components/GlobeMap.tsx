@@ -107,7 +107,7 @@ const GlobeMap: React.FunctionComponent<IMapProps> = ({ id, mapStyleURL, mapboxT
         onRender={(event) => event.target.resize()}>
         <GeolocateControl position="top-left" />
         <FullscreenControl position="top-left" />
-        <NavigationControl />
+        <NavigationControl position="top-left" />
         <ScaleControl />
         {clusters.map((cluster) => {
           const [longitude, latitude] = cluster.geometry.coordinates;
