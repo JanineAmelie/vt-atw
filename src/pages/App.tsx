@@ -13,7 +13,7 @@ import "firebase/compat/firestore";
 
 import { SignInWithSocialMedia, SignOut } from "../api/auth";
 import { Providers } from "../config/firebase";
-import { normalizeTwitterAuthResponse } from "../utils/data-normalization-utils";
+import { getUserDataById, normalizeTwitterAuthResponse } from "../utils/data-normalization-utils";
 import { dbGetAllUsers, dbAddUser } from "../api/users";
 import { LoadingBackdrop } from "../components/LoadingBackdrop";
 import { AuthedUser, DataItem } from "../types/types";
@@ -114,7 +114,13 @@ const App: React.FunctionComponent<IApplicationProps> = () => {
   return (
     <div className="App">
       <LoadingBackdrop loading={loading} />
-      <AddMarkerDialog handleClose={() => setDialogOpen(false)} open={dialogOpen} user={user} />
+      {user && (
+        <AddMarkerDialog
+          handleClose={() => setDialogOpen(false)}
+          open={dialogOpen}
+          user={getUserDataById(users, user.id)}
+        />
+      )}
       <HeaderBar user={user} onButtonClick={(e) => handleHeaderButtonClick(e)} />
       <GlobeMap id="vtw-atw" mapboxToken={mapBoxToken} mapStyleURL={mapBoxStyleURL} />
     </div>

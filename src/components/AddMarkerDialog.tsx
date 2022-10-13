@@ -7,11 +7,14 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import styled from "@emotion/styled";
-import { AuthedUser } from "../types/types";
+import Typography from "@mui/material/Typography";
+import Divider from "@mui/material/Divider";
+import { DataItem } from "../types/types";
+import CircularProgress from "@mui/material/CircularProgress";
 interface IAddMarkerDialogProps {
   handleClose: () => void;
   open: boolean;
-  user: AuthedUser | null;
+  user: DataItem | null;
 }
 
 const AddMarkerDialog: React.FunctionComponent<IAddMarkerDialogProps> = ({
@@ -21,27 +24,58 @@ const AddMarkerDialog: React.FunctionComponent<IAddMarkerDialogProps> = ({
 }) => {
   return (
     <div>
-      <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Edit Marker </DialogTitle>
-        <SAvatar>
-          <img src={user?.image} />
-        </SAvatar>
-        <SHeader></SHeader>
-        <DialogContent>
-          <DialogContentText>
-            Set your marker here. Your map marker will be randomly scattered within your country of
-            choice if no city is given.
-          </DialogContentText>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            label="Email Address"
-            type="email"
-            fullWidth
-            variant="standard"
-          />
+      <Dialog open={open} onClose={handleClose} scroll="paper">
+        <DialogTitle>Account Settings </DialogTitle>
+        {/* <img src={user?.image} /> */}
+        <DialogContent dividers>
+          {user ? (
+            <React.Fragment>
+              <DialogContentText>
+                <p>
+                  Set your location here. Your map marker will be randomly scattered within your
+                  country* of choice if only country is selected.
+                  <br />
+                  <SSmall>
+                    *There is a chance your marker will end up in the ocean or lakes etc, due to the
+                    nature of geographic country borders. ¯\_(ツ)_/¯
+                  </SSmall>
+                </p>
+              </DialogContentText>
+              <Divider sx={{ mt: 2, mb: 2 }} />
+              <Typography variant="h6" gutterBottom sx={{ mb: 3 }}>
+                User Information
+              </Typography>
+              <SFormContainer>
+                <TextField
+                  value={user?.id}
+                  disabled
+                  id="id"
+                  label="User ID"
+                  type="text"
+                  fullWidth
+                />
+                <TextField
+                  value={user?.name}
+                  disabled
+                  id="name"
+                  label="Name"
+                  type="text"
+                  fullWidth
+                />
+                <TextField value={user?.url} disabled id="Url" label="Url" type="url" fullWidth />
+              </SFormContainer>
+
+              <Typography variant="h6" gutterBottom sx={{ mb: 3 }}>
+                Marker Location
+              </Typography>
+
+              <DialogContentText>sdklkjflsdkjlsdfjksdklfjjklsfdkjl</DialogContentText>
+            </React.Fragment>
+          ) : (
+            <CircularProgress color="inherit" />
+          )}
         </DialogContent>
+
         <DialogActions>
           <Button onClick={() => handleClose()}>Cancel</Button>
           <Button onClick={handleClose}>Submit</Button>
@@ -53,18 +87,13 @@ const AddMarkerDialog: React.FunctionComponent<IAddMarkerDialogProps> = ({
 
 export { AddMarkerDialog };
 
-const SHeader = styled.div`
-  background-color: #003;
-  height: 200px;
+const SFormContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  min-height: 200px;
 `;
 
-const SAvatar = styled.div`
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  background-color: rgba(236, 240, 241, 1);
-  border: 5px solid rgb(236, 240, 241);
-  display: inline-block;
-  margin-top: -55px;
-  overflow: hidden;
+const SSmall = styled.small`
+  font-size: 10px;
+  color: #e84079;
 `;
