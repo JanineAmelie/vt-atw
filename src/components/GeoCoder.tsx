@@ -13,9 +13,7 @@ interface IGeoCoderProps {
 
 const GeoCoder: React.FunctionComponent<IGeoCoderProps> = ({ apiToken }) => {
   const [input, setInput] = useState("");
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setInput(event.target.value);
-  };
+
   const [selectedLocation, setSelectedLocation] = useState<GeoCodeResults | null>(null);
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState<GeoCodeResults[] | null>(null);
@@ -53,6 +51,11 @@ const GeoCoder: React.FunctionComponent<IGeoCoderProps> = ({ apiToken }) => {
     geocoderRef.current.query(searchInput);
   };
 
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    event.preventDefault;
+    setInput(event.target.value);
+  };
+
   const handleResultClick = (resultId: string) => {
     if (results?.length) {
       const selectedItem = results?.find((item) => item.id === resultId);
@@ -62,7 +65,7 @@ const GeoCoder: React.FunctionComponent<IGeoCoderProps> = ({ apiToken }) => {
         setInput(placename);
         setSelectedLocation(selectedItem);
 
-        geocoderRef.current.setInput(placename);
+        geocoderRef.current.setInput(input);
       }
     }
 
@@ -76,20 +79,13 @@ const GeoCoder: React.FunctionComponent<IGeoCoderProps> = ({ apiToken }) => {
       <p>ERROR: {JSON.stringify(error)}</p>
       <button onClick={() => queryGeoCoder(input)}>SEARCH </button>
       <SGeoCoder id="geocoder"></SGeoCoder>
-      <Box
-        component="form"
-        sx={{
-          "& > :not(style)": { m: 1, width: "25ch" }
-        }}
-        noValidate
-        autoComplete="off">
-        <TextField
-          id="outlined-name"
-          label="Location Search"
-          value={input}
-          onChange={handleChange}
-        />
-      </Box>
+      <TextField
+        id="outlined-name"
+        label="Location Search"
+        value={input}
+        onChange={handleInputChange}
+      />
+
       {results && (
         <ul>
           {results.map((item) => (
