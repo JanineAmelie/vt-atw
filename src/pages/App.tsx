@@ -18,6 +18,7 @@ import { dbGetAllUsers, dbAddUser } from "../api/users";
 import { LoadingBackdrop } from "../components/LoadingBackdrop";
 import { AuthedUser, DataItem } from "../types/types";
 import { MENU_ITEMS } from "../utils/constants";
+import { GeoCoder } from "../components/GeoCoder";
 
 const App: React.FunctionComponent<IApplicationProps> = () => {
   const mapBoxToken = process?.env.REACT_APP_MAPBOX_TOKEN || "";
@@ -113,7 +114,8 @@ const App: React.FunctionComponent<IApplicationProps> = () => {
 
   return (
     <div className="App">
-      <LoadingBackdrop loading={loading} />
+      <GeoCoder apiToken={mapBoxToken} />
+      {/* <LoadingBackdrop loading={loading} />
       {user && (
         <AddMarkerDialog
           handleClose={() => setDialogOpen(false)}
@@ -122,7 +124,7 @@ const App: React.FunctionComponent<IApplicationProps> = () => {
         />
       )}
       <HeaderBar user={user} onButtonClick={(e) => handleHeaderButtonClick(e)} />
-      <GlobeMap id="vtw-atw" mapboxToken={mapBoxToken} mapStyleURL={mapBoxStyleURL} users={users} />
+      <GlobeMap id="vtw-atw" mapboxToken={mapBoxToken} mapStyleURL={mapBoxStyleURL} users={users} /> */}
     </div>
   );
 };

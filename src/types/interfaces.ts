@@ -34,3 +34,29 @@ export interface TwitterData extends UserCredential {
     username: string;
   };
 }
+interface Properties {
+  short_code: string;
+  wikidata: string;
+}
+
+interface Geometry {
+  type: string;
+  coordinates: number[];
+}
+
+export interface GeoCodeResults {
+  id: string;
+  type: string;
+  place_type: string[];
+  relevance: number;
+  properties: Properties;
+  "text_en-US": string;
+  "language_en-US": string;
+  "place_name_en-US": string;
+  text: string;
+  language: string;
+  place_name: string;
+  bbox: number[];
+  center: number[];
+  geometry: Geometry;
+}

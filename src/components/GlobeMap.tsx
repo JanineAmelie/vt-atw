@@ -61,8 +61,7 @@ const GlobeMap: React.FunctionComponent<IMapProps> = ({ id, mapStyleURL, mapboxT
   };
 
   const handleMarkerClick = (markerData: IPopupProps) => {
-    const { latitude, longitude, id } = markerData;
-    console.log(markerData);
+    const { latitude, longitude } = markerData;
     // move to the clicked cluster
     if (mapRef.current) {
       mapRef.current.easeTo({
