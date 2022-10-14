@@ -23,9 +23,9 @@ import { GeoCoder } from "../components/GeoCoder";
 const App: React.FunctionComponent<IApplicationProps> = () => {
   const mapBoxToken = process?.env.REACT_APP_MAPBOX_TOKEN || "";
   const mapBoxStyleURL = process?.env.REACT_APP_MAPBOX_STYLE_URL || "";
-  const [dialogOpen, setDialogOpen] = React.useState(false);
-  const [users, setUsers] = React.useState<DataItem[]>([]);
-  const [user, setUser] = React.useState<null | AuthedUser>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [users, setUsers] = useState<DataItem[]>([]);
+  const [user, setUser] = useState<null | AuthedUser>(null);
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -115,7 +115,7 @@ const App: React.FunctionComponent<IApplicationProps> = () => {
   return (
     <div className="App">
       <GeoCoder apiToken={mapBoxToken} />
-      {/* <LoadingBackdrop loading={loading} />
+      <LoadingBackdrop loading={loading} />
       {user && (
         <AddMarkerDialog
           handleClose={() => setDialogOpen(false)}
@@ -124,7 +124,7 @@ const App: React.FunctionComponent<IApplicationProps> = () => {
         />
       )}
       <HeaderBar user={user} onButtonClick={(e) => handleHeaderButtonClick(e)} />
-      <GlobeMap id="vtw-atw" mapboxToken={mapBoxToken} mapStyleURL={mapBoxStyleURL} users={users} /> */}
+      <GlobeMap id="vtw-atw" mapboxToken={mapBoxToken} mapStyleURL={mapBoxStyleURL} users={users} />
     </div>
   );
 };

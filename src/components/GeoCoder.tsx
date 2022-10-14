@@ -1,7 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "@emotion/styled";
 import Tooltip from "@mui/material/Tooltip";
 import { GeoCodeResults } from "../types/interfaces";
+import MapboxGeocoder, { GeocoderOptions } from "@mapbox/mapbox-gl-geocoder";
+import Box from "@mui/material/Box";
+import TextField from "@mui/material/TextField";
+import { useEffectOnce } from "../utils/useEffectOnce";
 
 interface IGeoCoderProps {
   apiToken: string;
@@ -9,33 +13,108 @@ interface IGeoCoderProps {
 
 const GeoCoder: React.FunctionComponent<IGeoCoderProps> = ({ apiToken }) => {
   const [input, setInput] = useState("");
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setInput(event.target.value);
+  };
+  const [selectedLocation, setSelectedLocation] = useState<GeoCodeResults | null>(null);
   const [loading, setLoading] = useState(false);
-  const [result, setResults] = useState<GeoCodeResults | null>(null);
+  const [results, setResults] = useState<GeoCodeResults[] | null>(null);
+  const [error, setError] = useState(null);
   // https://raw.githubusercontent.com/visgl/react-map-gl/7.0-release/examples/geocoder/src/geocoder-control.tsx
-  // const ctrl = new MapboxGeocoder({
-  //   ...props,
-  //   marker: false,
-  //   accessToken: props.mapboxAccessToken
-  // });
-  // ctrl.on("loading", props.onLoading);
-  // ctrl.on("results", props.onResults);
-  // // ctrl.on("result", (evt) => {
-  //   props.onResult(evt);
+  const geocoderRef = useRef(
+    new MapboxGeocoder({
+      accessToken: apiToken,
+      marker: false,
+      clearAndBlurOnEsc: true
+    })
+  );
 
-  //   const { result } = evt;
-  //   const location =
-  //     result &&
-  //     (result.center || (result.geometry?.type === "Point" && result.geometry.coordinates));
-  //   if (location && props.marker) {
-  //     setMarker(<Marker {...props.marker} longitude={location[0]} latitude={location[1]} />);
-  //   } else {
-  //     setMarker(null);
-  //   }
-  // });
-  // ctrl.on("error", props.onError);
-  // return ctrl;
+  useEffectOnce(() => {
+    // const geocoder = ;
 
-  return <div>geocoder goes here</div>;
+    console.log("my effect is running");
+    geocoderRef.current.on("loading", () => setLoading(true));
+    // geocoder.on("results", () => setLoading(false));
+    geocoderRef.current.on("error", (e) => setError(e));
+    geocoderRef.current.on("results", (evt) => {
+      const { result } = evt;
+      const location =
+        result &&
+        (result.center || (result.geometry?.type === "Point" && result.geometry.coordinates));
+      setResults(evt.features);
+      // console.log(evt);
+    });
+
+    geocoderRef.current.addTo("#geocoder");
+  });
+
+  const queryGeoCoder = (searchInput: string) => {
+    // geocoderRef.current.setInput(searchInput);
+    geocoderRef.current.query(searchInput);
+  };
+
+  const handleResultClick = (resultId: string) => {
+    if (results?.length) {
+      const selectedItem = results?.find((item) => item.id === resultId);
+      if (selectedItem) {
+        const placename = selectedItem.place_name;
+        console.log(selectedItem);
+        setInput(placename);
+        setSelectedLocation(selectedItem);
+
+        geocoderRef.current.setInput(placename);
+      }
+    }
+
+    // if user searched for only a country
+
+    // then get longLat values of random point inside coutnry boundaries
+  };
+
+  return (
+    <div>
+      <p>ERROR: {JSON.stringify(error)}</p>
+      <button onClick={() => queryGeoCoder(input)}>SEARCH </button>
+      <SGeoCoder id="geocoder"></SGeoCoder>
+      <Box
+        component="form"
+        sx={{
+          "& > :not(style)": { m: 1, width: "25ch" }
+        }}
+        noValidate
+        autoComplete="off">
+        <TextField
+          id="outlined-name"
+          label="Location Search"
+          value={input}
+          onChange={handleChange}
+        />
+      </Box>
+      {results && (
+        <ul>
+          {results.map((item) => (
+            <li onClick={(e) => handleResultClick(item.id)} key={item.id}>
+              {item.place_name}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
 };
 
+const SGeoCoder = styled.div`
+  display: none;
+  .suggestions-wrapper {
+    display: none;
+  }
+
+  .mapboxgl-ctrl-geocoder--pin-right {
+    display: none;
+  }
+
+  .mapboxgl-ctrl-geocoder--icon {
+    display: none;
+  }
+`;
 export { GeoCoder };
