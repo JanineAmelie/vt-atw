@@ -3,24 +3,29 @@ import "firebase/compat/auth";
 import "firebase/compat/firestore";
 
 const convertToGeoJSON = (data: DataItem[]) => {
-  return data.map((item) => {
+  const newData: any[] = [];
+
+  data.forEach((item) => {
     if (item.latitude && item.longitude) {
-      return {
+      newData.push({
         type: "Feature",
         properties: {
           cluster: false,
           id: item.id,
           twitterHandle: item?.username || "",
           image: item?.image || "",
-          url: item?.url || ""
+          url: item?.url || "",
+          name: item.name
         },
         geometry: {
           type: "Point",
-          coordinates: [item.longitude, item.latitude]
+          coordinates: [parseFloat(item.longitude), parseFloat(item.latitude)]
         }
-      };
+      });
     }
   });
+
+  return newData;
 };
 
 // @TODO: any

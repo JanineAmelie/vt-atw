@@ -34,7 +34,6 @@ const AddMarkerDialog: React.FunctionComponent<IAddMarkerDialogProps> = ({
                 <p>
                   Set your location here. Your map marker will be randomly scattered within your
                   country* of choice if only country is selected.
-                  <br />
                   <SSmall>
                     *There is a chance your marker will end up in the ocean or lakes etc, due to the
                     nature of geographic country borders. ¯\_(ツ)_/¯

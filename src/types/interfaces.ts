@@ -1,11 +1,5 @@
 import { UserCredential } from "firebase/auth";
 import { Pin, TwitterEntities } from "./types";
-
-export interface IMapProps {
-  id: string;
-  mapStyleURL: string;
-  mapboxToken: string;
-}
 export interface IApplicationProps {
   name?: string;
 }

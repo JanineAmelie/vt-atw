@@ -42,7 +42,7 @@ const MapPopUp: React.FunctionComponent<IPopupProps> = ({
         <SImage width="100%" src={image} />
         <STextBox>
           <Sh2>{name}</Sh2>
-          <h3>{`@${twitterHandle}`}</h3>
+          <Sh3>{`@${twitterHandle}`}</Sh3>
         </STextBox>
       </STextContainer>
 
@@ -111,9 +111,14 @@ const SPopup = styled(Popup)`
   }
 
   .mapboxgl-popup-close-button {
-    top: -33px;
+    top: -20px;
     right: -16px;
-    font-size: 3em;
+    font-size: 2.5em;
+  }
+
+  .mapboxgl-popup-tip {
+    position: absolute;
+    top: -9px;
   }
 `;
 
@@ -135,6 +140,12 @@ const Sh2 = styled.h2`
   overflow: hidden;
   text-overflow: ellipsis;
   font-size: 18px;
+  line-height: 27px;
+`;
+
+const Sh3 = styled.h3`
+  margin-top: -4px;
+  color: #ea5e90;
 `;
 
 export default MapPopUp;

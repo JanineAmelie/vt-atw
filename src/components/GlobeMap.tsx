@@ -20,10 +20,16 @@ import { HEADER_BAR_HEIGHT } from "../utils/constants";
 
 import { MapPin } from "./MapPin";
 import MapPopUp from "./MapPopUp";
+import { IPopupProps } from "../types/interfaces";
+import { DataItem } from "../types/types";
+interface IMapProps {
+  id: string;
+  mapStyleURL: string;
+  mapboxToken: string;
+  users: DataItem[];
+}
 
-import { IMapProps, IPopupProps } from "../types/interfaces";
-
-const GlobeMap: React.FunctionComponent<IMapProps> = ({ id, mapStyleURL, mapboxToken }) => {
+const GlobeMap: React.FunctionComponent<IMapProps> = ({ id, mapStyleURL, mapboxToken, users }) => {
   const mapRef = useRef<MapRef>(null);
   const [popupInfo, setPopupInfo] = useState<IPopupProps | null>();
   const [viewState, setViewState] = React.useState({
@@ -33,7 +39,7 @@ const GlobeMap: React.FunctionComponent<IMapProps> = ({ id, mapStyleURL, mapboxT
   });
 
   /* Clustering Logic and "Viewbox" */
-  const points = convertToGeoJSON([]); // Prepare Data
+  const points = convertToGeoJSON(users); // Prepare Data
   let bounds: BBox | undefined = undefined; // @TODO: double check typing and guards
 
   if (mapRef.current) {
@@ -55,8 +61,8 @@ const GlobeMap: React.FunctionComponent<IMapProps> = ({ id, mapStyleURL, mapboxT
   };
 
   const handleMarkerClick = (markerData: IPopupProps) => {
-    const { latitude, longitude } = markerData;
-
+    const { latitude, longitude, id } = markerData;
+    console.log(markerData);
     // move to the clicked cluster
     if (mapRef.current) {
       mapRef.current.easeTo({

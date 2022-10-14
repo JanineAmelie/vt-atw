@@ -122,7 +122,7 @@ const App: React.FunctionComponent<IApplicationProps> = () => {
         />
       )}
       <HeaderBar user={user} onButtonClick={(e) => handleHeaderButtonClick(e)} />
-      <GlobeMap id="vtw-atw" mapboxToken={mapBoxToken} mapStyleURL={mapBoxStyleURL} />
+      <GlobeMap id="vtw-atw" mapboxToken={mapBoxToken} mapStyleURL={mapBoxStyleURL} users={users} />
     </div>
   );
 };
