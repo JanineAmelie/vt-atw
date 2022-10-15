@@ -3,15 +3,16 @@ import { DataItem } from "../types/types";
 import { FIREBASE_COLLECTION_USERS } from "../utils/constants";
 const db = firebase.firestore();
 
-const dbGetAllUsers = () => {
-  const results: any[] = [];
+const dbGetAllUsers = (): Promise<void | DataItem[]> => {
+  const results: DataItem[] = [];
 
   return db
     .collection(FIREBASE_COLLECTION_USERS)
     .get()
     .then((querySnapshot) => {
       querySnapshot.forEach((user) => {
-        results.push(user.data());
+        const data = user.data();
+        results.push(data as DataItem);
       });
     })
     .then(() => {
@@ -22,7 +23,7 @@ const dbGetAllUsers = () => {
     });
 };
 
-const dbAddUser = (obj: DataItem) => {
+const dbAddUser = (obj: DataItem): Promise<void> => {
   return db
     .collection(FIREBASE_COLLECTION_USERS)
     .doc(obj.id)

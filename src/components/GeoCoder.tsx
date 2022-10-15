@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback, useEffect } from "react";
 import styled from "@emotion/styled";
 import { GeoCodeResults } from "../types/interfaces";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
@@ -18,19 +18,17 @@ const GeoCoder: React.FunctionComponent<IGeoCoderProps> = ({ apiToken }) => {
   const [selectedLocation, setSelectedLocation] = useState<GeoCodeResults | null>(null);
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState<readonly GeoCodeResults[]>([]);
-  const [error, setError] = useState(null);
-  // https://raw.githubusercontent.com/visgl/react-map-gl/7.0-release/examples/geocoder/src/geocoder-control.tsx
+  const [error, setError] = useState("");
   const geocoderRef = useRef(
     new MapboxGeocoder({
       accessToken: apiToken,
-      marker: false,
-      clearAndBlurOnEsc: true
+      marker: false
     })
   );
 
   useEffectOnce(() => {
     geocoderRef.current.on("loading", () => setLoading(true));
-    geocoderRef.current.on("error", (e) => setError(e));
+    geocoderRef.current.on("error", (error: string) => setError(error));
     geocoderRef.current.on("results", (evt) => {
       setLoading(false);
       setResults(evt.features);
@@ -47,35 +45,14 @@ const GeoCoder: React.FunctionComponent<IGeoCoderProps> = ({ apiToken }) => {
 
   const debounceQueryGeocoder = useCallback(debounce(queryGeoCoder, 300), []);
 
-  const handleInputChange = (newValue: string) => {
-    console.log("trigger handleInputChange");
-    setInputValue(newValue);
-    console.log("selectedLocation", selectedLocation);
+  // if user searched for only a country
+  // then get longLat values of random point inside coutnry boundaries
+
+  useEffect(() => {
     if (!selectedLocation) {
-      console.log("line 54");
-      debounceQueryGeocoder(newValue);
+      debounceQueryGeocoder(inputValue); // make api call
     }
-  };
-
-  const handleResultClick = (resultId: string) => {
-    if (results?.length) {
-      const selectedItem = results?.find((item) => item.id === resultId);
-      if (selectedItem) {
-        const placename = selectedItem.place_name;
-        console.log("new Selected", selectedItem);
-        // setInput(placename);
-        setSelectedLocation(selectedItem);
-
-        // geocoderRef.current.setInput(inputValue);
-      }
-    }
-
-    //fix witr refs, or fix with persist., fix with everything in dep array
-
-    // if user searched for only a country
-
-    // then get longLat values of random point inside coutnry boundaries
-  };
+  }, [inputValue, selectedLocation]);
 
   return (
     <div>
@@ -83,6 +60,7 @@ const GeoCoder: React.FunctionComponent<IGeoCoderProps> = ({ apiToken }) => {
 
       <Stack spacing={2} sx={{ m: 2, width: 300 }}>
         <Autocomplete
+          loading={loading}
           freeSolo
           inputValue={inputValue}
           value={selectedLocation}
@@ -91,17 +69,21 @@ const GeoCoder: React.FunctionComponent<IGeoCoderProps> = ({ apiToken }) => {
             newValue: string | GeoCodeResults | null
           ) => {
             newValue && typeof newValue !== "string" && setSelectedLocation(newValue);
-
-            // newValue && typeof newValue !== "string" && handleResultClick(newValue.id);
           }}
           onInputChange={(event, newInputValue) => {
             selectedLocation && setSelectedLocation(null);
-            handleInputChange(newInputValue);
+            setInputValue(newInputValue);
           }}
           options={results}
           getOptionLabel={(option) => (typeof option === "string" ? option : option.place_name)}
           renderInput={(params) => (
-            <TextField {...params} id="outlined-name" label="Location Search" />
+            <TextField
+              error={!!error}
+              helperText={error}
+              {...params}
+              id="outlined-name"
+              label="Location Search"
+            />
           )}
         />
       </Stack>

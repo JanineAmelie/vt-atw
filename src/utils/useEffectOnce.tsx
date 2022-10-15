@@ -1,11 +1,12 @@
 //https://dev.to/ag-grid/react-18-avoiding-use-effect-getting-called-twice-4i9e
 
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-const useEffectOnce = (effect: () => void | (() => void)) => {
+const useEffectOnce = (effect: () => void | (() => void)): void => {
   const destroyFunc = useRef<void | (() => void)>();
   const effectCalled = useRef(false);
   const renderAfterCalled = useRef(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [val, setVal] = useState<number>(0);
 
   if (effectCalled.current) {

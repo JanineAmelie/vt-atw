@@ -1,9 +1,11 @@
-import { DataItem } from "../types/types";
-import "firebase/compat/auth";
-import "firebase/compat/firestore";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable  @typescript-eslint/explicit-module-boundary-types */
+// @TODO: fix these warnings^
 
-const convertToGeoJSON = (data: DataItem[]) => {
-  const newData: any[] = [];
+import { DataItem } from "../types/types";
+
+const convertToGeoJSON = (data: DataItem[]): GeoJSON.Feature[] => {
+  const newData: GeoJSON.Feature[] = [];
 
   data.forEach((item) => {
     if (item.latitude && item.longitude) {
@@ -28,8 +30,8 @@ const convertToGeoJSON = (data: DataItem[]) => {
   return newData;
 };
 
-// @TODO: any
-const normalizeTwitterAuthResponse = (data: any) => {
+// @TODO: any, <-- weakest point of the app
+const normalizeTwitterAuthResponse = (data: any): DataItem => {
   const { id_str, name, description, profile_image_url, entities } =
     data.additionalUserInfo.profile;
   const { username } = data.additionalUserInfo;
@@ -46,7 +48,7 @@ const normalizeTwitterAuthResponse = (data: any) => {
   };
 };
 
-const getUserDataById = (users: DataItem[], userId: string) =>
+const getUserDataById = (users: DataItem[], userId: string): DataItem | null =>
   users.find((element) => element.id === userId) || null;
 
 export { convertToGeoJSON, normalizeTwitterAuthResponse, getUserDataById };

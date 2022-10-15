@@ -7,7 +7,9 @@ import "firebase/compat/firestore";
 
 import { auth } from "../config/firebase";
 
-const SignInWithSocialMedia = (provider: firebase.auth.AuthProvider) =>
+const SignInWithSocialMedia = (
+  provider: firebase.auth.AuthProvider
+): Promise<firebase.auth.UserCredential> =>
   new Promise<firebase.auth.UserCredential>((resolve, reject) => {
     auth
       .signInWithPopup(provider)
@@ -15,7 +17,7 @@ const SignInWithSocialMedia = (provider: firebase.auth.AuthProvider) =>
       .catch((error) => reject(error));
   });
 
-const SignOut = () =>
+const SignOut = (): Promise<void> =>
   new Promise((resolve, reject) => {
     auth
       .signOut()
