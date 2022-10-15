@@ -1,11 +1,10 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import styled from "@emotion/styled";
-import Tooltip from "@mui/material/Tooltip";
 import { GeoCodeResults } from "../types/interfaces";
 import MapboxGeocoder, { GeocoderOptions } from "@mapbox/mapbox-gl-geocoder";
-import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import { useEffectOnce } from "../utils/useEffectOnce";
+import debounce from "lodash.debounce";
 
 interface IGeoCoderProps {
   apiToken: string;
@@ -36,9 +35,9 @@ const GeoCoder: React.FunctionComponent<IGeoCoderProps> = ({ apiToken }) => {
     geocoderRef.current.on("error", (e) => setError(e));
     geocoderRef.current.on("results", (evt) => {
       const { result } = evt;
-      const location =
-        result &&
-        (result.center || (result.geometry?.type === "Point" && result.geometry.coordinates));
+      // const location =
+      //   result &&
+      //   (result.center || (result.geometry?.type === "Point" && result.geometry.coordinates));
       setResults(evt.features);
       // console.log(evt);
     });
@@ -46,14 +45,19 @@ const GeoCoder: React.FunctionComponent<IGeoCoderProps> = ({ apiToken }) => {
     geocoderRef.current.addTo("#geocoder");
   });
 
-  const queryGeoCoder = (searchInput: string) => {
-    // geocoderRef.current.setInput(searchInput);
-    geocoderRef.current.query(searchInput);
+  const queryGeoCoder = (value: string) => {
+    console.log("queryingGeocoder", value);
+    geocoderRef.current.setInput(value);
+    geocoderRef.current.query(value);
   };
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    event.preventDefault;
-    setInput(event.target.value);
+  const debounceQueryGeocoder = useCallback(debounce(queryGeoCoder, 1000), []);
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { value } = event.target;
+    setInput(value);
+
+    debounceQueryGeocoder(value);
   };
 
   const handleResultClick = (resultId: string) => {
@@ -69,6 +73,8 @@ const GeoCoder: React.FunctionComponent<IGeoCoderProps> = ({ apiToken }) => {
       }
     }
 
+    //fix witr refs, or fix with persist., fix with everything in dep array
+
     // if user searched for only a country
 
     // then get longLat values of random point inside coutnry boundaries
@@ -76,8 +82,8 @@ const GeoCoder: React.FunctionComponent<IGeoCoderProps> = ({ apiToken }) => {
 
   return (
     <div>
-      <p>ERROR: {JSON.stringify(error)}</p>
-      <button onClick={() => queryGeoCoder(input)}>SEARCH </button>
+      <p>ERROaaaR: {JSON.stringify(error)}</p>
+      {/* <button onClick={() => queryGeoCoder(input)}>SEARCH </button> */}
       <SGeoCoder id="geocoder"></SGeoCoder>
       <TextField
         id="outlined-name"
