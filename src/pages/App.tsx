@@ -13,7 +13,11 @@ import "firebase/compat/firestore";
 
 import { SignInWithSocialMedia, SignOut } from "../api/auth";
 import { Providers } from "../config/firebase";
-import { getUserDataById, normalizeTwitterAuthResponse } from "../utils/data-normalization-utils";
+import {
+  getRandomPointInBbox,
+  getUserDataById,
+  normalizeTwitterAuthResponse
+} from "../utils/data-normalization-utils";
 import { dbGetAllUsers, dbAddUser, dbUpdateUserLocation, dbGetUserDataById } from "../api/users";
 import { LoadingBackdrop } from "../components/LoadingBackdrop";
 import { AuthedUser, DataItem } from "../types/types";
@@ -94,11 +98,11 @@ const App: React.FunctionComponent<IApplicationProps> = () => {
         longitude: selectedLocation.geometry.coordinates[0]
       };
 
-      // check if bbox property exists on object
-      // get randomLocation
-
-      if (selectedLocation?.bbox?.length) {
-        // get random location
+      if (selectedLocation?.bbox?.length === 4) {
+        const randomPoint = getRandomPointInBbox(selectedLocation.bbox);
+        console.log("Has BBox! Random Point -->", randomPoint);
+        newLocation.latitude = randomPoint[1];
+        newLocation.longitude = randomPoint[0];
       }
 
       dbUpdateUserLocation(
@@ -113,6 +117,9 @@ const App: React.FunctionComponent<IApplicationProps> = () => {
         .catch((e: Error) => {
           setError(e.message);
         });
+    } else {
+      console.log("selectedLocation", selectedLocation);
+      setLoading(false);
     }
   };
 

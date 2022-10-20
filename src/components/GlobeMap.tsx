@@ -110,7 +110,6 @@ const GlobeMap: React.FunctionComponent<IMapProps> = ({ id, mapStyleURL, mapboxT
         ref={mapRef}
         onMove={(evt) => handleMove(evt)}
         onRender={(event) => event.target.resize()}>
-        <GeolocateControl position="top-left" />
         <FullscreenControl position="top-left" />
         <NavigationControl position="top-left" />
         <ScaleControl />

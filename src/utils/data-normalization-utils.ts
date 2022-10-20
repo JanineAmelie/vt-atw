@@ -63,9 +63,32 @@ const determineIfSelectedLocationIsTypeCountry = (
 const getUserDataById = (users: DataItem[], userId: string): DataItem | null =>
   users.find((element) => element.id === userId) || null;
 
+const getRandomNumberInRange = (num1: number, num2: number): number => {
+  // get min max, of two numbers as when we pass coordinates, we don't know
+  // which one of the two is the smaller number.
+  const min = Math.min(num1, num2);
+  const max = Math.max(num1, num2);
+
+  return Math.random() * (max - min) + min;
+};
+
+const getRandomPointInBbox = (bbox: number[]): number[] => {
+  const long1 = bbox[0];
+  const lat1 = bbox[1]; //SW
+
+  const long2 = bbox[2]; // NE
+  const lat2 = bbox[3];
+
+  const randomLat = getRandomNumberInRange(lat1, lat2);
+  const randomLong = getRandomNumberInRange(long1, long2);
+
+  return [randomLong, randomLat];
+};
+
 export {
   convertToGeoJSON,
   normalizeTwitterAuthResponse,
   getUserDataById,
-  determineIfSelectedLocationIsTypeCountry
+  determineIfSelectedLocationIsTypeCountry,
+  getRandomPointInBbox
 };

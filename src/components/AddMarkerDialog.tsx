@@ -13,6 +13,9 @@ import { DataItem } from "../types/types";
 import CircularProgress from "@mui/material/CircularProgress";
 import { GeoCoder } from "./GeoCoder";
 import { GeoCodeResults } from "../types/interfaces";
+import Chip from "@mui/material/Chip";
+import WarningIcon from "@mui/icons-material/Warning";
+
 interface IAddMarkerDialogProps {
   handleClose: () => void;
   open: boolean;
@@ -36,19 +39,26 @@ const AddMarkerDialog: React.FunctionComponent<IAddMarkerDialogProps> = ({
     <div>
       <Dialog open={open} onClose={handleClose} scroll="paper">
         <DialogTitle>Account Settings </DialogTitle>
-        {/* <img src={user?.image} /> */}
         <DialogContent dividers>
           {user ? (
             <React.Fragment>
               <DialogContentText>
-                Set your location here. Your map marker will be randomly scattered within your
-                country* of choice if only country is selected.
-                <SSmall>
-                  <br />
-                  *There is a chance your marker will end up in the ocean or lakes etc, due to the
-                  nature of geographic country borders. ¯\_(ツ)_/¯
-                </SSmall>
+                Set your location here.
+                <br />
+                <br />
+                In the interest of privacy your marker location is slightly off-set randomly. Due to
+                this, there is a chance your marker will end up in the ocean or even outside your
+                country borders. ¯\_(ツ)_/¯
               </DialogContentText>
+
+              <SWarning>
+                {/* <WarningIcon /> */}
+                <Typography component="span">
+                  Please be mindful of your safety and privacy when setting your location in this
+                  app. <br />
+                  Do *not* select your personal address.
+                </Typography>
+              </SWarning>
               <Divider sx={{ mt: 2, mb: 2 }} />
               <Typography variant="h6" gutterBottom sx={{ mb: 3 }}>
                 User Information
@@ -98,13 +108,22 @@ const AddMarkerDialog: React.FunctionComponent<IAddMarkerDialogProps> = ({
 
 export { AddMarkerDialog };
 
+const SWarning = styled.div`
+  margin-top: 1em;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  background-color: #d32f2f;
+  justify-content: center;
+  padding: 1em;
+  color: #fff;
+  border-radius: 0px;
+  align-items: center;
+  text-align: center;
+`;
+
 const SFormContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   min-height: 200px;
-`;
-
-const SSmall = styled.small`
-  font-size: 10px;
-  color: #e84079;
 `;
