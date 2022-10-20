@@ -5,23 +5,27 @@ import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 import TextField from "@mui/material/TextField";
 import { useEffectOnce } from "../utils/useEffectOnce";
 import debounce from "lodash.debounce";
-import Stack from "@mui/material/Stack";
 import Autocomplete from "@mui/material/Autocomplete";
 
 interface IGeoCoderProps {
-  apiToken: string;
+  selectedLocation: GeoCodeResults | null | string;
+  setSelectedLocation: (location: GeoCodeResults | null) => void;
+  mapBoxToken: string;
 }
 
-const GeoCoder: React.FunctionComponent<IGeoCoderProps> = ({ apiToken }) => {
-  const [inputValue, setInputValue] = useState("");
-
-  const [selectedLocation, setSelectedLocation] = useState<GeoCodeResults | null>(null);
+const GeoCoder: React.FunctionComponent<IGeoCoderProps> = ({
+  selectedLocation,
+  setSelectedLocation,
+  mapBoxToken
+}) => {
+  const defaultInputValue = typeof selectedLocation === "string" ? selectedLocation : "";
+  const [inputValue, setInputValue] = useState(defaultInputValue);
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState<readonly GeoCodeResults[]>([]);
   const [error, setError] = useState("");
   const geocoderRef = useRef(
     new MapboxGeocoder({
-      accessToken: apiToken,
+      accessToken: mapBoxToken,
       marker: false
     })
   );
@@ -38,7 +42,6 @@ const GeoCoder: React.FunctionComponent<IGeoCoderProps> = ({ apiToken }) => {
   });
 
   const queryGeoCoder = (value: string) => {
-    console.log("queryingGeocoder", value);
     geocoderRef.current.setInput(value);
     geocoderRef.current.query(value);
   };
@@ -52,41 +55,42 @@ const GeoCoder: React.FunctionComponent<IGeoCoderProps> = ({ apiToken }) => {
     if (!selectedLocation) {
       debounceQueryGeocoder(inputValue); // make api call
     }
+
+    console.log(selectedLocation);
   }, [inputValue, selectedLocation]);
 
   return (
     <div>
       <SGeoCoder id="geocoder" />
 
-      <Stack spacing={2} sx={{ m: 2, width: 300 }}>
-        <Autocomplete
-          loading={loading}
-          freeSolo
-          inputValue={inputValue}
-          value={selectedLocation}
-          onChange={(
-            event: React.SyntheticEvent<Element, Event>,
-            newValue: string | GeoCodeResults | null
-          ) => {
-            newValue && typeof newValue !== "string" && setSelectedLocation(newValue);
-          }}
-          onInputChange={(event, newInputValue) => {
-            selectedLocation && setSelectedLocation(null);
-            setInputValue(newInputValue);
-          }}
-          options={results}
-          getOptionLabel={(option) => (typeof option === "string" ? option : option.place_name)}
-          renderInput={(params) => (
-            <TextField
-              error={!!error}
-              helperText={error}
-              {...params}
-              id="outlined-name"
-              label="Location Search"
-            />
-          )}
-        />
-      </Stack>
+      <Autocomplete
+        fullWidth
+        loading={loading}
+        freeSolo
+        inputValue={inputValue}
+        value={selectedLocation}
+        onChange={(
+          event: React.SyntheticEvent<Element, Event>,
+          newValue: string | GeoCodeResults | null
+        ) => {
+          newValue && typeof newValue !== "string" && setSelectedLocation(newValue);
+        }}
+        onInputChange={(event, newInputValue) => {
+          selectedLocation && setSelectedLocation(null);
+          setInputValue(newInputValue);
+        }}
+        options={results}
+        getOptionLabel={(option) => (typeof option === "string" ? option : option.place_name)}
+        renderInput={(params) => (
+          <TextField
+            error={!!error}
+            helperText={error}
+            {...params}
+            id="outlined-name"
+            label="Location Search"
+          />
+        )}
+      />
     </div>
   );
 };

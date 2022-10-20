@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "firebase/compat/firestore";
 import { auth } from "../config/firebase";
-import { IApplicationProps } from "../types/interfaces";
+import { GeoCodeResults, IApplicationProps } from "../types/interfaces";
 import HeaderBar from "../components/HeaderBar";
 import GlobeMap from "../components/GlobeMap";
 import "mapbox-gl/dist/mapbox-gl.css";
@@ -14,11 +14,10 @@ import "firebase/compat/firestore";
 import { SignInWithSocialMedia, SignOut } from "../api/auth";
 import { Providers } from "../config/firebase";
 import { getUserDataById, normalizeTwitterAuthResponse } from "../utils/data-normalization-utils";
-import { dbGetAllUsers, dbAddUser } from "../api/users";
+import { dbGetAllUsers, dbAddUser, dbUpdateUserLocation, dbGetUserDataById } from "../api/users";
 import { LoadingBackdrop } from "../components/LoadingBackdrop";
 import { AuthedUser, DataItem } from "../types/types";
 import { MENU_ITEMS } from "../utils/constants";
-import { GeoCoder } from "../components/GeoCoder";
 
 const App: React.FunctionComponent<IApplicationProps> = () => {
   const mapBoxToken = process?.env.REACT_APP_MAPBOX_TOKEN || "";
@@ -28,7 +27,7 @@ const App: React.FunctionComponent<IApplicationProps> = () => {
   const [user, setUser] = useState<null | AuthedUser>(null);
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
-
+  const [selectedLocation, setSelectedLocation] = useState<GeoCodeResults | null | string>(null);
   const { en } = intl;
 
   // @TODO: Edgecase what happens when user logins with changed name?
@@ -41,8 +40,8 @@ const App: React.FunctionComponent<IApplicationProps> = () => {
 
     SignInWithSocialMedia(provider)
       .then((result) => {
+        const normalizedData = normalizeTwitterAuthResponse(result);
         if (result.additionalUserInfo?.isNewUser) {
-          const normalizedData = normalizeTwitterAuthResponse(result);
           dbAddUser(normalizedData)
             .then(() => dbGetAllUsers())
             .then(() => setLoading(false));
@@ -58,8 +57,17 @@ const App: React.FunctionComponent<IApplicationProps> = () => {
     auth.onAuthStateChanged((user) => {
       if (user) {
         const uid = auth.currentUser?.providerData[0]?.uid;
-        console.log(en.api.successUserDetected, uid);
         if (uid) {
+          // fetch User Data, setUser After,
+          dbGetUserDataById(uid)
+            .then((res) => {
+              const userData = res.data() as DataItem;
+              setSelectedLocation(userData.location);
+            })
+            .catch((error) => {
+              setLoading(false);
+              setError(error.message);
+            });
           setUser({
             id: uid,
             image: auth.currentUser?.photoURL || "",
@@ -69,11 +77,45 @@ const App: React.FunctionComponent<IApplicationProps> = () => {
           console.error("Error getting user UID");
         }
       } else {
-        console.log(en.api.errorNoUserDetected);
+        console.error(en.api.errorNoUserDetected);
       }
       setLoading(false);
     });
   };
+
+  const handleSubmit = () => {
+    if (error !== "") setError("");
+    setDialogOpen(false);
+    setLoading(true);
+
+    if (selectedLocation && typeof selectedLocation !== "string" && user?.id) {
+      const newLocation = {
+        latitude: selectedLocation.geometry.coordinates[1],
+        longitude: selectedLocation.geometry.coordinates[0]
+      };
+
+      // check if bbox property exists on object
+      // get randomLocation
+
+      if (selectedLocation?.bbox?.length) {
+        // get random location
+      }
+
+      dbUpdateUserLocation(
+        user.id,
+        newLocation.latitude.toString(),
+        newLocation.longitude.toString(),
+        selectedLocation.place_name
+      )
+        .then(() => {
+          fetchUsers();
+        })
+        .catch((e: Error) => {
+          setError(e.message);
+        });
+    }
+  };
+
   const handleLogoutClick = () => {
     setLoading(true);
     SignOut().then(() => {
@@ -84,6 +126,10 @@ const App: React.FunctionComponent<IApplicationProps> = () => {
   useEffect(() => {
     setLoading(true);
     // Always fetch all users first
+    fetchUsers();
+  }, []);
+
+  const fetchUsers = () => {
     dbGetAllUsers()
       .then((r) => {
         const data = r as DataItem[];
@@ -92,7 +138,7 @@ const App: React.FunctionComponent<IApplicationProps> = () => {
       .then(() => {
         handleAuthStateChange();
       });
-  }, []);
+  };
 
   const handleHeaderButtonClick = (menuItem: string) => {
     // if loggedIn show settings menu
@@ -114,13 +160,16 @@ const App: React.FunctionComponent<IApplicationProps> = () => {
 
   return (
     <div className="App">
-      <GeoCoder apiToken={mapBoxToken} />
       <LoadingBackdrop loading={loading} />
       {user && (
         <AddMarkerDialog
+          handleSubmit={() => handleSubmit()}
           handleClose={() => setDialogOpen(false)}
           open={dialogOpen}
           user={getUserDataById(users, user.id)}
+          mapBoxToken={mapBoxToken}
+          selectedLocation={selectedLocation}
+          setSelectedLocation={setSelectedLocation}
         />
       )}
       <HeaderBar user={user} onButtonClick={(e) => handleHeaderButtonClick(e)} />

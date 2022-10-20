@@ -11,16 +11,26 @@ import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import { DataItem } from "../types/types";
 import CircularProgress from "@mui/material/CircularProgress";
+import { GeoCoder } from "./GeoCoder";
+import { GeoCodeResults } from "../types/interfaces";
 interface IAddMarkerDialogProps {
   handleClose: () => void;
   open: boolean;
   user: DataItem | null;
+  mapBoxToken: string;
+  selectedLocation: GeoCodeResults | null | string;
+  setSelectedLocation: (location: GeoCodeResults | null) => void;
+  handleSubmit: () => void;
 }
 
 const AddMarkerDialog: React.FunctionComponent<IAddMarkerDialogProps> = ({
   handleClose,
   open,
-  user
+  user,
+  selectedLocation,
+  setSelectedLocation,
+  mapBoxToken,
+  handleSubmit
 }) => {
   return (
     <div>
@@ -31,14 +41,13 @@ const AddMarkerDialog: React.FunctionComponent<IAddMarkerDialogProps> = ({
           {user ? (
             <React.Fragment>
               <DialogContentText>
-                <p>
-                  Set your location here. Your map marker will be randomly scattered within your
-                  country* of choice if only country is selected.
-                  <SSmall>
-                    *There is a chance your marker will end up in the ocean or lakes etc, due to the
-                    nature of geographic country borders. ¯\_(ツ)_/¯
-                  </SSmall>
-                </p>
+                Set your location here. Your map marker will be randomly scattered within your
+                country* of choice if only country is selected.
+                <SSmall>
+                  <br />
+                  *There is a chance your marker will end up in the ocean or lakes etc, due to the
+                  nature of geographic country borders. ¯\_(ツ)_/¯
+                </SSmall>
               </DialogContentText>
               <Divider sx={{ mt: 2, mb: 2 }} />
               <Typography variant="h6" gutterBottom sx={{ mb: 3 }}>
@@ -67,8 +76,11 @@ const AddMarkerDialog: React.FunctionComponent<IAddMarkerDialogProps> = ({
               <Typography variant="h6" gutterBottom sx={{ mb: 3 }}>
                 Marker Location
               </Typography>
-
-              <DialogContentText>sdklkjflsdkjlsdfjksdklfjjklsfdkjl</DialogContentText>
+              <GeoCoder
+                selectedLocation={selectedLocation}
+                setSelectedLocation={setSelectedLocation}
+                mapBoxToken={mapBoxToken}
+              />
             </React.Fragment>
           ) : (
             <CircularProgress color="inherit" />
@@ -77,7 +89,7 @@ const AddMarkerDialog: React.FunctionComponent<IAddMarkerDialogProps> = ({
 
         <DialogActions>
           <Button onClick={() => handleClose()}>Cancel</Button>
-          <Button onClick={handleClose}>Submit</Button>
+          <Button onClick={() => handleSubmit()}>Submit</Button>
         </DialogActions>
       </Dialog>
     </div>

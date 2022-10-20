@@ -14,6 +14,7 @@ export type DataItem = {
   url: string;
   latitude: string;
   longitude: string;
+  location: string;
 };
 
 export type AuthedUser = {

@@ -41,7 +41,7 @@ interface Properties {
 
 interface Geometry {
   type: string;
-  coordinates: number[];
+  coordinates: number[]; //An array in the format [longitude,latitude] at the center of the specified bbox.
 }
 
 export interface GeoCodeResults {

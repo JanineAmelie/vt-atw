@@ -23,14 +23,44 @@ const dbGetAllUsers = (): Promise<void | DataItem[]> => {
     });
 };
 
-const dbAddUser = (obj: DataItem): Promise<void> => {
+const dbAddUser = (obj: DataItem): Promise<void | DataItem> => {
   return db
     .collection(FIREBASE_COLLECTION_USERS)
     .doc(obj.id)
     .set(obj)
-    .catch(function (error) {
+    .catch((error) => {
       console.error("Error adding user: ", error);
     });
 };
 
-export { dbGetAllUsers, dbAddUser };
+const dbUpdateUserLocation = (
+  id: string,
+  latitude: string,
+  longitude: string,
+  location: string
+): Promise<void> => {
+  return db
+    .collection(FIREBASE_COLLECTION_USERS)
+    .doc(id)
+    .update({
+      latitude,
+      longitude,
+      location
+    })
+    .catch((error) => {
+      console.error("Error updating user location: ", error);
+    });
+};
+
+//@TODO: fix typings Firebase Firestore DocumentReference
+const dbGetUserDataById = (id: string): Promise<void | any> => {
+  return db
+    .collection(FIREBASE_COLLECTION_USERS)
+    .doc(id)
+    .get()
+    .catch((error) => {
+      console.error("Error fetching user data: ", error);
+    });
+};
+
+export { dbGetAllUsers, dbAddUser, dbUpdateUserLocation, dbGetUserDataById };

@@ -2,6 +2,7 @@
 /* eslint-disable  @typescript-eslint/explicit-module-boundary-types */
 // @TODO: fix these warnings^
 
+import { GeoCodeResults } from "../types/interfaces";
 import { DataItem } from "../types/types";
 
 const convertToGeoJSON = (data: DataItem[]): GeoJSON.Feature[] => {
@@ -32,7 +33,7 @@ const convertToGeoJSON = (data: DataItem[]): GeoJSON.Feature[] => {
 
 // @TODO: any, <-- weakest point of the app
 const normalizeTwitterAuthResponse = (data: any): DataItem => {
-  const { id_str, name, description, profile_image_url, entities } =
+  const { id_str, name, description, profile_image_url, entities, location } =
     data.additionalUserInfo.profile;
   const { username } = data.additionalUserInfo;
 
@@ -44,11 +45,27 @@ const normalizeTwitterAuthResponse = (data: any): DataItem => {
     image: profile_image_url.replace("_normal", ""),
     url: entities?.url?.urls[0]?.expanded_url || "",
     latitude: "",
-    longitude: ""
+    longitude: "",
+    location
   };
+};
+
+const determineIfSelectedLocationIsTypeCountry = (
+  selectedLocation: GeoCodeResults
+): boolean | null => {
+  if (selectedLocation.place_type.length) {
+    return selectedLocation.place_type.includes("country");
+  }
+
+  return null;
 };
 
 const getUserDataById = (users: DataItem[], userId: string): DataItem | null =>
   users.find((element) => element.id === userId) || null;
 
-export { convertToGeoJSON, normalizeTwitterAuthResponse, getUserDataById };
+export {
+  convertToGeoJSON,
+  normalizeTwitterAuthResponse,
+  getUserDataById,
+  determineIfSelectedLocationIsTypeCountry
+};
