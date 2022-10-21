@@ -48,9 +48,6 @@ const GeoCoder: React.FunctionComponent<IGeoCoderProps> = ({
 
   const debounceQueryGeocoder = useCallback(debounce(queryGeoCoder, 300), []);
 
-  // if user searched for only a country
-  // then get longLat values of random point inside coutnry boundaries
-
   useEffect(() => {
     if (!selectedLocation) {
       debounceQueryGeocoder(inputValue); // make api call

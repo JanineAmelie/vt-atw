@@ -27,15 +27,13 @@ const App: React.FunctionComponent<IApplicationProps> = () => {
   const mapBoxToken = process?.env.REACT_APP_MAPBOX_TOKEN || "";
   const mapBoxStyleURL = process?.env.REACT_APP_MAPBOX_STYLE_URL || "";
   const [dialogOpen, setDialogOpen] = useState(false);
+
   const [users, setUsers] = useState<DataItem[]>([]);
   const [user, setUser] = useState<null | AuthedUser>(null);
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [selectedLocation, setSelectedLocation] = useState<GeoCodeResults | null | string>(null);
   const { en } = intl;
-
-  // @TODO: Edgecase what happens when user logins with changed name?
-  // @TODO: Edgecase what happens when user unlinks their accoutnt from the app, delete? keep?
 
   const signInWithSocialMedia = (provider: firebase.auth.AuthProvider) => {
     if (error !== "") setError("");
@@ -100,7 +98,6 @@ const App: React.FunctionComponent<IApplicationProps> = () => {
 
       if (selectedLocation?.bbox?.length === 4) {
         const randomPoint = getRandomPointInBbox(selectedLocation.bbox);
-        console.log("Has BBox! Random Point -->", randomPoint);
         newLocation.latitude = randomPoint[1];
         newLocation.longitude = randomPoint[0];
       }
@@ -180,7 +177,13 @@ const App: React.FunctionComponent<IApplicationProps> = () => {
         />
       )}
       <HeaderBar user={user} onButtonClick={(e) => handleHeaderButtonClick(e)} />
-      <GlobeMap id="vtw-atw" mapboxToken={mapBoxToken} mapStyleURL={mapBoxStyleURL} users={users} />
+      <GlobeMap
+        id="vtw-atw"
+        mapboxToken={mapBoxToken}
+        mapStyleURL={mapBoxStyleURL}
+        users={users}
+        dialogOpen={dialogOpen}
+      />
     </div>
   );
 };

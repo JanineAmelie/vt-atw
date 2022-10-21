@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import type { MapRef } from "react-map-gl";
 import useSupercluster from "use-supercluster";
 import { BBox } from "geojson";
@@ -10,7 +10,6 @@ import {
   FullscreenControl,
   ScaleControl,
   Map,
-  GeolocateControl,
   Marker,
   ViewStateChangeEvent
 } from "react-map-gl";
@@ -27,9 +26,16 @@ interface IMapProps {
   mapStyleURL: string;
   mapboxToken: string;
   users: DataItem[];
+  dialogOpen: boolean;
 }
 
-const GlobeMap: React.FunctionComponent<IMapProps> = ({ id, mapStyleURL, mapboxToken, users }) => {
+const GlobeMap: React.FunctionComponent<IMapProps> = ({
+  id,
+  mapStyleURL,
+  mapboxToken,
+  users,
+  dialogOpen
+}) => {
   const mapRef = useRef<MapRef>(null);
   const [popupInfo, setPopupInfo] = useState<IPopupProps | null>();
   const [viewState, setViewState] = React.useState({
@@ -37,6 +43,12 @@ const GlobeMap: React.FunctionComponent<IMapProps> = ({ id, mapStyleURL, mapboxT
     latitude: 40,
     zoom: 1
   });
+
+  useEffect(() => {
+    if (dialogOpen) {
+      setPopupInfo(null);
+    }
+  }, [dialogOpen]);
 
   /* Clustering Logic and "Viewbox" */
   const points = convertToGeoJSON(users); // Prepare Data
